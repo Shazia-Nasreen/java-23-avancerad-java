@@ -6,6 +6,12 @@ import java.util.ArrayList;
 
 
 public class WordleJFrame extends JFrame {
+
+    /*****************************
+        Author : Alrik He
+        Date: 2023
+    *******************************/
+
     // skapa classer för sam-atbete
     // mer ord randomisa det
     //features : läs från file ,lägg till fler game modes
@@ -15,14 +21,15 @@ public class WordleJFrame extends JFrame {
     private JPanel gamearea;
     private String result = "";
 
+
     WordleJFrame() {
+
         gamearea = new JPanel();
         gamearea.setBounds(200, 200, 520, 200);
         JLabel label = new JLabel("Wordle");
 
         gamearea.add(label);
         gamearea.setLayout(new BoxLayout(gamearea, BoxLayout.LINE_AXIS));
-
         for (char c : wordArray[0].toCharArray()) {
             JTextField jt = new JTextField("", 1);
             jfArray.add(jt);
@@ -37,7 +44,7 @@ public class WordleJFrame extends JFrame {
                         public void keyReleased(KeyEvent e) {
                             char c = e.getKeyChar();
                             if ('A' <= c && c <= 'z') // a-Z
-                                jt.setText(String.valueOf(c).toUpperCase());
+                                jt.setText(String.valueOf(c) );
                             else
                                 jt.setText("");
                         }
@@ -78,7 +85,7 @@ public class WordleJFrame extends JFrame {
     }
 
 
-    void makeHistory ( int amountOfTries) {
+    void makeHistory(int amountOfTries) {
         //skapa rutor med färger som beskriver om ordet är korrekt
         //grön rätt bokstav + rätt plats
         //Gul rätt bokstav + fel plats
