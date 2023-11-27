@@ -35,7 +35,7 @@ public class TicTacToe extends JFrame {
         }
 
         application = new TicTacToe();
-        application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        application.setDefaultCloseOperation(EXIT_ON_CLOSE);
         Image iconImage= new ImageIcon("src/icon-05.png").getImage();
         application.setIconImage(iconImage);
         application.setTaskbarIcon(iconImage); //mac har dockad icon
