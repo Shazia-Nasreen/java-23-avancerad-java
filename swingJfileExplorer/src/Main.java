@@ -1,7 +1,12 @@
+import com.eclipsesource.json.Json;
+
 import javax.swing.*;
 import java.util.ArrayList;
 
 public class Main {
+
+    Json j;
+
     public static void main(String[] args) {
 
         //Organism o = new Organism() ;
@@ -42,8 +47,7 @@ public class Main {
 
         h6.unique=false;
         h3.unique=false;
-        for (Organism tempO: arO
-             ) {
+        for (Organism tempO: arO) {
 
             if(tempO instanceof Human)
             System.out.println(((Human)tempO).unique);
@@ -56,9 +60,11 @@ public class Main {
         System.out.println("Hello world!");
 
 
-     /*   JFileChooser j = new JFileChooser("d:");
+        JFileChooser j = new JFileChooser("src");
+        j.showSaveDialog(null);
 
-// Open the save dialog
-        j.showSaveDialog(null);*/
+            System.out.println(j.getSelectedFile().getPath());
+
+
     }
 }

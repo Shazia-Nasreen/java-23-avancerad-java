@@ -1,3 +1,7 @@
+//import com.eclipsesource.json.*;
+import com.eclipsesource.json.*;
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -13,7 +17,7 @@ public class Test2 extends JFrame {
     private JPanel panelCells;
     private JTextField sdfTextField;
     private Scanner sc;
-
+    private Json jParser;
     private int amountOfCol = 0, amountOfRow = 0 ;
     Test2(){ //construtor
         setContentPane(panel);
@@ -22,7 +26,8 @@ public class Test2 extends JFrame {
         setSize(500, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setVisible(true);
+       // setVisible(true);
+
 
         try {
             File f = new File("src/Materiallista.json");
@@ -30,12 +35,26 @@ public class Test2 extends JFrame {
             String page= "";
             while (sc.hasNext()) {
                 String line = sc.nextLine();
-                System.out.println(line);
+                //System.out.println(line);
                 page+= line;
-                System.out.println(line.length());
+               // System.out.println(line.length());
             }
             sc.close();
-            System.out.println(page); // utanför
+
+            JsonValue jv = Json.parse(page);
+            JsonArray ja = jv.asArray();
+
+            JsonObject jo =ja.get(0).asObject();
+            System.out.println(jo.names().size());
+            for (int i = 0; i < ja.size()-1; i++) {
+                JsonObject j= ja.get(i).asObject();
+                System.out.println(j.get("Item"));
+                System.out.println(j.get("Amount per unit"));
+                System.out.println(j.get("Total amount"));
+            }
+
+
+    /*        System.out.println(page); // utanför
               String[] array = page.split("}");
 
             for (int i = 0 ;  i < array.length ; i++) {
@@ -45,17 +64,20 @@ public class Test2 extends JFrame {
             String[] firstsplit= array[0].split(",");
             amountOfCol= firstsplit.length; // 3
             for (int i = 0; i <3; i++) {  //första header data !!!!
-                //System.out.println(firstsplit[i]);
-                //System.out.println(firstsplit[i].split(":")[0]);
                 System.out.println(firstsplit[i].split(":")[0].split("\"")[1]);
             }
-
 
             for (int i = 0; i <3; i++) {  //Andra header data !!!!
                 System.out.println(firstsplit[i].split("\"",5)[3]);
             }
 
-            System.out.println(aryL);
+            for (int i = 0 ;  i < array.length ; i++) {
+                String[] as = array[i].split(",");
+                for (int j = 0; j <3; j++) {
+                    System.out.println(as[j].split("\"",5)[3]);  }
+            }
+*/
+            //System.out.println(aryL);
 
          /*   for (String s : aryL) {
                 System.out.println(s);
