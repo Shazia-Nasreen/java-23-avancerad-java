@@ -50,14 +50,9 @@ public class Test2 extends JFrame {
                 System.out.println(firstsplit[i].split(":")[0].split("\"")[1]);
             }
 
-            System.out.println(firstsplit[0].split("\"",5)[3]);
-            System.out.println(firstsplit[1].split("\"",5)[3]);
-            System.out.println(firstsplit[2].split("\"",5)[3]);
-            for (int i = 0; i <3; i++) {  //Andra header data !!!!
-               // System.out.println(firstsplit[i]);
-               // System.out.println(Arrays.deepToString(firstsplit[i].split("\"")));
-               // System.out.println((firstsplit[i].split("\"")[3]));
 
+            for (int i = 0; i <3; i++) {  //Andra header data !!!!
+                System.out.println(firstsplit[i].split("\"",5)[3]);
             }
 
             System.out.println(aryL);
