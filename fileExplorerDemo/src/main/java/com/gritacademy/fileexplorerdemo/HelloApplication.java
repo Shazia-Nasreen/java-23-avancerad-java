@@ -24,17 +24,19 @@ public class HelloApplication extends Application {
         fileC.setTitle("Open File");
 
         fileC.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("ALL FILES", "*.*"),
-                new FileChooser.ExtensionFilter("ZIP", "*.zip"),
+                new FileChooser.ExtensionFilter("csv", "*.csv"),
+                new FileChooser.ExtensionFilter("json", "*.json"),
+                new FileChooser.ExtensionFilter("xml", "*.xml"),
+                new FileChooser.ExtensionFilter("ALL FILES", "*.*")
+             /*   new FileChooser.ExtensionFilter("ZIP", "*.zip"),
                 new FileChooser.ExtensionFilter("PDF", "*.pdf"),
                 new FileChooser.ExtensionFilter("TEXT", "*.txt"),
                 new FileChooser.ExtensionFilter("IMAGE FILES", "*.jpg", "*.png", "*.gif")
-        );
+      */  );
 
         File file = fileC.showOpenDialog(stage.getScene().getWindow());
         if (file != null) {
             System.out.println(file.getPath());
-
         } else  {
             System.out.println("error"); // or something else
         }

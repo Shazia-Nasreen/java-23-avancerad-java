@@ -12,4 +12,5 @@
 
   <Label fx:id="welcomeText" />
   <Button onAction="#onHelloButtonClick" text="Open fileExplorer" />
+   <Button mnemonicParsing="false" onAction="#onSaveButton" text="save file" />
 </VBox>

@@ -9,7 +9,6 @@ import java.io.File;
 
 import static com.gritacademy.fileexplorerdemo.HelloApplication.scene;
 
-
 public class HelloController {
 
     @FXML
@@ -36,7 +35,11 @@ public class HelloController {
         } else  {
             System.out.println("error"); // or something else
         }
+    }
 
+    @FXML
+    void onSaveButton(ActionEvent event) {
+        System.out.println("SAVEE!!!!!!!"); // or something else
 
     }
 

@@ -10,23 +10,23 @@ public class Main {
     public static void main(String[] args) {
 
         //Organism o = new Organism() ;
-        Human h= new Human();
-        Human h2= new Human();
-        Human h3= new Human();
-        Human h4= new Human();
-        Human h5= new Human();
-        Human h6= new Human();
-        SuperHuman sh= new SuperHuman();
-        Bacteria b1= new Bacteria();
+        Human h = new Human();
+        Human h2 = new Human();
+        Human h3 = new Human();
+        Human h4 = new Human();
+        Human h5 = new Human();
+        Human h6 = new Human();
+        SuperHuman sh = new SuperHuman();
+        Bacteria b1 = new Bacteria();
 
         ArrayList<Organism> arO = new ArrayList<>();
         ArrayList<SmartI> arS = new ArrayList<>();
         arS.add(sh);
 
-        for (SmartI tempI: arS
+        for (SmartI tempI : arS
         ) {
             tempI.getSmart();
-            System.out.println(((Human)tempI).nickname);
+            System.out.println(((Human) tempI).nickname);
 
     /*        if(tempI instanceof Human)
                 System.out.println(((Human)tempO).unique);
@@ -45,25 +45,28 @@ public class Main {
         arO.add(b1);
 
 
-        h6.unique=false;
-        h3.unique=false;
-        for (Organism tempO: arO) {
+        h6.unique = false;
+        h3.unique = false;
+        for (Organism tempO : arO) {
 
-            if(tempO instanceof Human)
-            System.out.println(((Human)tempO).unique);
+            if (tempO instanceof Human)
+                System.out.println(((Human) tempO).unique);
             else
-             ((Bacteria)tempO).doSound();
+                ((Bacteria) tempO).doSound();
 
         }
 
-        System.out.println( h.getClass().getCanonicalName()  );
+        System.out.println(h.getClass().getCanonicalName());
         System.out.println("Hello world!");
 
 
         JFileChooser j = new JFileChooser("src");
-        j.showSaveDialog(null);
-
+        j.showOpenDialog(null);
+        try {
             System.out.println(j.getSelectedFile().getPath());
+        } catch (Exception e) {
+            System.out.println("no file choosen");
+        }
 
 
     }

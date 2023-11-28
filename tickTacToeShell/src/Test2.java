@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class Test2 extends JFrame {
 
     public static ArrayList<String> aryL = new ArrayList<>();
+    private  String url = "src/Materiallista.json";
 
     private JPanel panel;
     private JPanel panelCells;
@@ -30,7 +31,7 @@ public class Test2 extends JFrame {
 
 
         try {
-            File f = new File("src/Materiallista.json");
+            File f = new File(url);
             sc = new Scanner(f);
             String page= "";
             while (sc.hasNext()) {
