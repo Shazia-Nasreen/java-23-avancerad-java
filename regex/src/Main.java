@@ -4,8 +4,31 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
+
+    /*****************************
+        Author : Alrik He
+        Date: 2023
+    *******************************/
     public static void main(String[] args) {
- /*       Pattern p=Pattern.compile("m..");
+
+        //java 21 , hemsidan är java 8
+        // \\ escape char är dubbel
+
+        String myText = "34567";
+        Pattern p = Pattern.compile("[0-9]");
+        Matcher m = p.matcher(myText);
+
+        System.out.println(m.find());
+
+
+
+
+
+
+
+
+
+       /* Pattern p=Pattern.compile("m..");
         Matcher m=p.matcher("min text");
         System.out.println(m.find()); // returnerar boolean*/
 

@@ -17,9 +17,9 @@ public class Main {
 
 
         JFileChooser j = new JFileChooser("src");
-        j.addChoosableFileFilter(new FileNameExtensionFilter("json file (.json)",".json") );
-        j.addChoosableFileFilter(new FileNameExtensionFilter("xml file (.xml)",".xml") );
-        j.addChoosableFileFilter(new FileNameExtensionFilter("csv file (.csv)",".csv") );
+        j.addChoosableFileFilter(new FileNameExtensionFilter("json file (.json)","json") );
+        j.addChoosableFileFilter(new FileNameExtensionFilter("xml file (.xml)","xml") );
+        j.addChoosableFileFilter(new FileNameExtensionFilter("csv file (.csv)","csv") );
         int option=j.showOpenDialog(null);
 
         //regex  \\ är en escape character
