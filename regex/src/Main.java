@@ -5,6 +5,10 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
+ /*       Pattern p=Pattern.compile("m..");
+        Matcher m=p.matcher("min text");
+        System.out.println(m.find()); // returnerar boolean*/
+
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -19,8 +23,7 @@ public class Main {
             System.out.println("Enter input string to search: ");
 
             String text = sc.nextLine();
-            Matcher matcher =
-                    pattern.matcher(text);
+            Matcher matcher =  pattern.matcher(text);
 
             boolean found = false;
             while (matcher.find()) {
@@ -46,8 +49,7 @@ public class Main {
                 System.out.println(("No match found..."));
             } else System.out.print(text.substring(e, text.length()));
 
-            System.out.println("");
-           // sc.next();
+            System.out.println("\n");
             sc.reset();
 
 
