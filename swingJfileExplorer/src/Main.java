@@ -1,6 +1,10 @@
 import com.eclipsesource.json.Json;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.lang.module.FindException;
 import java.util.ArrayList;
 
 public class Main {
@@ -9,6 +13,39 @@ public class Main {
 
     public static void main(String[] args) {
 
+        //polymorphDemo();
+
+
+        JFileChooser j = new JFileChooser("src");
+        j.addChoosableFileFilter(new FileNameExtensionFilter("json file (.json)",".json") );
+        j.addChoosableFileFilter(new FileNameExtensionFilter("xml file (.xml)",".xml") );
+        j.addChoosableFileFilter(new FileNameExtensionFilter("csv file (.csv)",".csv") );
+        int option=j.showOpenDialog(null);
+
+        //regex  \\ är en escape character
+
+        switch (option){
+            case JFileChooser.APPROVE_OPTION -> System.out.println("Open");
+            case JFileChooser.CANCEL_OPTION -> System.out.println("cancel");
+            case JFileChooser.ERROR_OPTION -> System.out.println("error");
+        }
+
+        try {
+            String path = j.getSelectedFile().getPath();
+            String fileType = path.split("\\.")[1]; // splittar på punkt
+            File f = j.getSelectedFile();   // få ut file <-- better
+            String fileDec = j.getTypeDescription(f); //Verbose info om filformatet
+            System.out.println(path);
+            System.out.println(fileType);
+            System.out.println(fileDec);
+        } catch (Exception e) {
+            System.out.println("no file choosen" + e);
+        }
+
+
+    }
+
+    private static void polymorphDemo() {
         //Organism o = new Organism() ;
         Human h = new Human();
         Human h2 = new Human();
@@ -58,16 +95,5 @@ public class Main {
 
         System.out.println(h.getClass().getCanonicalName());
         System.out.println("Hello world!");
-
-
-        JFileChooser j = new JFileChooser("src");
-        j.showOpenDialog(null);
-        try {
-            System.out.println(j.getSelectedFile().getPath());
-        } catch (Exception e) {
-            System.out.println("no file choosen");
-        }
-
-
     }
 }

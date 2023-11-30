@@ -58,7 +58,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.gritacademy.fileexplorerdemo/com.gritacademy.fileexplorerdemo.HelloApplication</mainClass>
+              <mainClass>com.gritacademy.fileexplorerdemo/com.gritacademy.fileexplorerdemo.javaFxFileApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
