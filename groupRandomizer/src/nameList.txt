@@ -1,18 +1,15 @@
 Adam Barnell
 Adam Berrabia
 Aleksander Bjelk
-Aleksandra Zhurzhenko
 Alexander Jansson
 Alexandra Nimhagen
-Ali Mansoor
 Andreas Jabrell
 Ardi Fetiu
 Carl Sundberg
 Erik Werther
 Geta Kelemwork
-Joel Bech.
+Joel Bech
 Johanna Pettersson
-Kangwanphrai Chaisoda
 Karl Kowal
 Kean von Wowern
 Linus Lindberg
@@ -32,4 +29,4 @@ Sam Danielsson
 Sami Eltarras
 Samuel Bromée
 Shazia Nasreen
-Valter Fundin
+Shayaan Ahmed

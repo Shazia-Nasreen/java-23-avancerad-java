@@ -11,26 +11,9 @@ public class Main {
     *******************************/
     public static void main(String[] args) {
 
-        //java 21 , hemsidan är java 8
-        // \\ escape char är dubbel
-
-        String myText = "34567";
-        Pattern p = Pattern.compile("[0-9]");
-        Matcher m = p.matcher(myText);
-
-        System.out.println(m.find());
+        testPatternClass();
 
 
-
-
-
-
-
-
-
-       /* Pattern p=Pattern.compile("m..");
-        Matcher m=p.matcher("min text");
-        System.out.println(m.find()); // returnerar boolean*/
 
         Scanner sc = new Scanner(System.in);
 
@@ -77,5 +60,17 @@ public class Main {
 
 
         }
+    }
+
+    private static void testPatternClass() {
+
+        //java 21 , hemsidan är java 8
+        // \\ escape char är dubbel
+
+        String myText = "34567";
+        Pattern p = Pattern.compile("[0-9]");
+        Matcher m = p.matcher(myText);
+
+        System.out.println(m.find());
     }
 }

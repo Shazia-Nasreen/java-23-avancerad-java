@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static final int groupAmount = 10;
+    static final int groupAmount = 11;
 
     public static void main(String[] args) {
         ArrayList<String> nameArray = new ArrayList<>();

@@ -109,11 +109,11 @@ public class Test2 extends JFrame {
             System.out.println("ERROR" + e.toString());
         }*/
         int i = 0;
-        for (Component jt : panelCells.getComponents()) { // panel innehåller
+       /* for (Component jt : panelCells.getComponents()) { // panel innehåller
             System.out.println(((JTextField)jt).getText());
             ((JTextField)jt).setText(aryL.get(i));
             i++;
-        }
+        }*/
     }
     public static void main(String[] args) { // main
         new Test2();

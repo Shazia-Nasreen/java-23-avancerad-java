@@ -1,5 +1,9 @@
 package com.gritacademy.fileexplorerdemo;
 
+
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonValue;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,10 +17,11 @@ import java.io.IOException;
 
 public class javaFxFileApplication extends Application {
     public static Scene scene;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(javaFxFileApplication.class.getResource("hello-view.fxml"));
-         scene = new Scene(fxmlLoader.load(), 320, 240);
+        scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("open file!");
         stage.setScene(scene);
         stage.show();
@@ -34,14 +39,24 @@ public class javaFxFileApplication extends Application {
                 new FileChooser.ExtensionFilter("json", "*.json"),
                 new FileChooser.ExtensionFilter("xml", "*.xml"),
                 new FileChooser.ExtensionFilter("ALL FILES", "*.*")
-    );
+        );
 
         File file = fileC.showOpenDialog(stage.getScene().getWindow());
 
 
         if (file != null) {
             System.out.println(file.getPath());
-        } else  {
+
+
+            //read json
+            JsonValue jv = Json.parse("sdfsdfdsdsfdsfds");
+            JsonArray ja = jv.asArray();
+
+
+
+
+
+        } else {
             System.out.println("error"); // or something else
         }
 

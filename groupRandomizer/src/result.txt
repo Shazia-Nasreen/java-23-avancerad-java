@@ -1,35 +1,32 @@
 1 Adam Berrabia
- 1 Alexandra Nimhagen
- 1 Linus Lindberg
- 1 Valter Fundin
- 10 Johanna Pettersson
- 10 Malcolm Alm
- 10 Mashreka Binte Mannan
- 2 Nikolina Vikberg
- 2 Oliver Nilsson
- 2 Reidar Thorsen
+ 1 Malcolm Alm
+ 1 Mashreka Binte Mannan
+ 10 Alexandra Nimhagen
+ 10 Oliver Schuller
+ 10 Samuel Brome
+ 11 Rositsa Nikolova
+ 11 Salim bin otong muhammad
+ 2 Andreas Jabrell
+ 2 Karl Kowal
  2 Sam Danielsson
- 3 Geta Kelemwork
- 3 Kean von Wowern
- 3 Lovisa Hjalmar
- 3 Neil Elvirsson
+ 3 Alexander Jansson
+ 3 Carl Sundberg
+ 3 Joel Bech
  4 Ardi Fetiu
- 4 Erik Werther
- 4 Kangwanphrai Chaisoda
- 4 Salim bin otong muhammad
+ 4 Lovisa Hjalmar
+ 4 Nikolina Vikberg
  5 Adam Barnell
- 5 Andreas Jabrell
- 5 Joel Bech
- 5 Rositsa Nikolova
- 6 Alexander Jansson
- 6 Karl Kowal
- 6 Mohammed Mohammed
- 7 Ali Mansoor
- 7 Carl Sundberg
- 7 Sami Eltarras
- 8 Aleksandra Zhurzhenko
- 8 Oliver Schuller
- 8 Samuel Brome
+ 5 Kean von Wowern
+ 5 Neil Elvirsson
+ 6 Johanna Pettersson
+ 6 Oskar Karlsson
+ 6 Shayaan Ahmed
+ 7 Geta Kelemwork
+ 7 Oliver Nilsson
+ 7 Reidar Thorsen
+ 8 Erik Werther
+ 8 Linus Lindberg
+ 8 Sami Eltarras
  9 Aleksander Bjelk
- 9 Oskar Karlsson
+ 9 Mohammed Mohammed
  9 Shazia Nasreen

@@ -21,7 +21,6 @@ public class JavaFXFileController {
     private ScrollPane scrollP;
     @FXML
     void onHelloButtonClick(ActionEvent event) {
-
     }
 
     @FXML
