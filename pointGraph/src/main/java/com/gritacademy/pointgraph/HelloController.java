@@ -20,13 +20,14 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.gritacademy.pointgraph.HelloApplication.scene;
 
 
 public class HelloController {
-
+    //final String[] mode= {"DEFAULT","ORDERED_X","NO_LINES","ADD","PAN","MOVE"};
     private GraphicsContext gc;
     private List<Point2D> points = new ArrayList<>();
     @FXML
@@ -62,6 +63,7 @@ public class HelloController {
                 @Override
                 public void changed(ObservableValue<? extends Mode> observableValue, Mode mode, Mode selected) {
                     System.out.println(selected);
+
                 }
             }
         );

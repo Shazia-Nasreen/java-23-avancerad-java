@@ -25,8 +25,11 @@ public class HelloApplication extends Application {
         stage.setResizable(false);
         stage.show();
 
+        System.out.println(Mode.DEFAULT.ordinal()); //index
+        System.out.println(Mode.DEFAULT); //skriva ut string direkt
+        System.out.println(Mode.DEFAULT==Mode.DEFAULT); //jämnförelse
 
-      //  setStyle("-fx-background-color: red");
+        //  setStyle("-fx-background-color: red");
 
 
         HelloController controller = fxmlLoader.getController();

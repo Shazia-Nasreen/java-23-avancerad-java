@@ -31,7 +31,7 @@ public class ThreadsController {
             sl.add("hej");
         }
         sl.get(20);  // acces test
-
+        makeBracets(40);
         
         System.out.println("Go!!");
         ProgressBar pb = new ProgressBar();
@@ -42,6 +42,14 @@ public class ThreadsController {
             //pb.setMaxWidth(Control.USE_PREF_SIZE);
             //pb.setMaxWidth(trainContainer.getWidth());
         trainContainer.getChildren().add(pb);
+    }
+
+    //log n tournament
+     int makeBracets (int n){
+        if(n==0) return 0;
+         n = (int) Math.floor(n/2);
+         System.out.println("amount of bracket i tournament: "+n);
+        return makeBracets(n);
     }
 
 
