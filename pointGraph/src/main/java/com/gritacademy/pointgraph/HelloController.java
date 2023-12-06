@@ -1,6 +1,8 @@
 package com.gritacademy.pointgraph;
 
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -8,22 +10,19 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.gritacademy.pointgraph.HelloApplication.scene;
 
 
 public class HelloController {
@@ -36,7 +35,6 @@ public class HelloController {
     @FXML
     private Slider hSlide;
 
-
     @FXML
     private TextField insertTextFieldX;
 
@@ -48,23 +46,40 @@ public class HelloController {
 
     @FXML
     private Label welcomeText;
-    final private int gap=100;
-    private int row=10,col=10; // auto assign
-    private ObservableList<Mode> allModes = FXCollections.observableArrayList(Mode.DEFAULT,Mode.ORDERED_X,Mode.ORDERED_Y);
-  @FXML
-    private ChoiceBox<Mode> choiceBox ;
+    final private int gap = 100;
+    private int row = 10, col = 10; // auto assign
+    private ObservableList<Mode> allModes = FXCollections.observableArrayList(Mode.DEFAULT, Mode.ORDERED_X, Mode.ORDERED_Y, Mode.NO_LINES);
+    @FXML
+    private ChoiceBox<Mode> choiceBox;
+    private Tooltip tooltip = new Tooltip("Tooltip Text");
 
-  @FXML
-  private void initialize(){
-      choiceBox.setItems(allModes);
-      choiceBox.setValue(Mode.DEFAULT);
-  }
+    @FXML
+    private void initialize() {
+        choiceBox.setItems(allModes);
+        choiceBox.setValue(Mode.DEFAULT);
+        choiceBox.getSelectionModel().selectedItemProperty().addListener(
+            new ChangeListener<Mode>() {
+                @Override
+                public void changed(ObservableValue<? extends Mode> observableValue, Mode mode, Mode selected) {
+                    System.out.println(selected);
+                }
+            }
+        );
+
+    }
 
     public HelloController() {
         canvas = new Canvas(1000, 600);
         canvas.setVisible(true);
         System.out.println("init canvas");
+        //Tooltip.install(canvas, tooltip);
 
+    }
+
+
+    @FXML
+    void onChoiceSelected(ContextMenuEvent event) {
+        System.out.println("SELECTED MODE");
     }
 
     @FXML
@@ -84,13 +99,11 @@ public class HelloController {
     @FXML
     void moveVertical(MouseEvent event) {
         System.out.println("slide V " + vSlide.getValue());
-
     }
 
     @FXML
     void onChangeX() {
         String temp = insertTextFieldX.getText();
-        System.out.println("asdasd");
         if (!temp.matches("\\d\\.*")) {
             insertTextFieldX.setText(temp.replaceAll("[^\\d\\.]", ""));
             insertTextFieldX.deselect();
@@ -101,12 +114,26 @@ public class HelloController {
     @FXML
     void onChangeY() {
         String temp = insertTextFieldY.getText();
-        System.out.println("asdasd");
         if (!temp.matches("\\d\\.*")) {
             insertTextFieldY.setText(temp.replaceAll("[^\\d\\.]", ""));
             insertTextFieldY.deselect();
             insertTextFieldY.positionCaret(insertTextFieldY.getLength());
         }
+    }
+
+    @FXML
+    void onMouseMoveOnCanvas(MouseEvent event) {
+        // System.out.println(event.getX()+":"+event.getY());
+        final int CANVAS_H = (int) canvas.getHeight();
+        scene.setCursor(Cursor.DEFAULT);
+        for (Point2D p : points)
+            if (p.distance(new Point2D(event.getX(), CANVAS_H - event.getY())) < 10) {
+                // canvas.setTooltip(new Tooltip("Tooltip for Button"));
+                System.out.println(p);
+                tooltip.setText(event.getX() + ":" + event.getY());
+                scene.setCursor(Cursor.HAND);
+                break;
+            }
     }
 
     @FXML
@@ -117,9 +144,7 @@ public class HelloController {
             System.out.println(valx + " : " + valy);
             draw(new Point2D(Float.parseFloat(insertTextFieldX.getText()), Float.parseFloat(insertTextFieldY.getText())));
         } catch (NumberFormatException n) {
-            System.out.println(
-                    n
-            );
+            System.out.println(n);
         }
     }
 
@@ -139,15 +164,12 @@ public class HelloController {
         gc.translate(0, canvas.getHeight());
         gc.scale(1, -1);
         drawGrid();
-        // gc.setTransform( Transform.affine(0,0,0,0,0,0));
+
         gc.setFill(Color.GREY);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1.0);
-        //gc.setFill(Color.WHITE);
-        //gc.strokeOval(0, 0, canvas.getWidth(), canvas.getHeight());
+
         if (point != null) points.add(point);
-
-
         Point2D pastP = null;
         for (Point2D p : points) {
             gc.beginPath();
@@ -170,15 +192,13 @@ public class HelloController {
 
         gc.setStroke(Color.LIGHTGRAY);
         gc.beginPath();
-        for (int i = 0; i < row; i++)
-        {
+        for (int i = 0; i < row; i++) {
             gc.moveTo(0, i * gap);
             gc.lineTo(1000, i * gap);
         }
-        for (int j =0 ; j<col; j++)
-        {
-            gc.moveTo(j * gap,0);
-            gc.lineTo( j * gap,700);
+        for (int j = 0; j < col; j++) {
+            gc.moveTo(j * gap, 0);
+            gc.lineTo(j * gap, 700);
         }
         gc.stroke();
     }
@@ -186,7 +206,7 @@ public class HelloController {
     void deleteNode(Point2D target) {
         Point2D targetToRemove;
         for (Point2D p : points)
-            if (p.distance(target) < 20) {
+            if (p.distance(target) < 15) {
                 targetToRemove = p;
                 points.remove(p);
                 break;

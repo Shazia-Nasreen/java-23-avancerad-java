@@ -18,7 +18,7 @@
           <padding>
               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
           </padding>
-         <Canvas fx:id="canvas" height="570.0" onMouseClicked="#onCanvasClick" width="973.0" />
+         <Canvas fx:id="canvas" height="570.0" onMouseClicked="#onCanvasClick" onMouseMoved="#onMouseMoveOnCanvas" width="973.0" />
          <HBox prefHeight="35.0" prefWidth="973.0">
             <children>
             
@@ -35,7 +35,7 @@
                   </HBox.margin>
                </Button>
                <Button layoutX="187.0" layoutY="10.0" onAction="#onReset" text="reset" />
-               <ChoiceBox fx:id="choiceBox" prefWidth="150.0" />
+               <ChoiceBox fx:id="choiceBox" onContextMenuRequested="#onChoiceSelected" prefWidth="150.0" />
             </children>
          </HBox>
       </VBox>
