@@ -42,7 +42,8 @@ public class HelloController {
 
     @FXML
     private Label welcomeText;
-
+    final private int gap=100;
+    private int row=10,col=10; // auto assign
 
     public HelloController() {
         canvas = new Canvas(1000, 600);
@@ -52,7 +53,11 @@ public class HelloController {
 
     @FXML
     void onCanvasClick(MouseEvent event) {
-    
+        System.out.println(event.getButton());
+        if (event.getButton() == MouseButton.SECONDARY)
+            deleteNode(new Point2D(event.getX(), canvas.getHeight() - event.getY()));
+        else
+            draw(new Point2D(event.getX(), canvas.getHeight() - event.getY()));
     }
 
     @FXML
@@ -117,14 +122,14 @@ public class HelloController {
 
         gc.translate(0, canvas.getHeight());
         gc.scale(1, -1);
-
+        drawGrid();
         // gc.setTransform( Transform.affine(0,0,0,0,0,0));
         gc.setFill(Color.GREY);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1.0);
         //gc.setFill(Color.WHITE);
         //gc.strokeOval(0, 0, canvas.getWidth(), canvas.getHeight());
-        points.add(point);
+        if (point != null) points.add(point);
 
 
         Point2D pastP = null;
@@ -142,14 +147,35 @@ public class HelloController {
         gc.scale(1, -1);
         gc.translate(0, -canvas.getHeight());
 
-        /*gc.beginPath();
-        gc.strokeLine(500, 500, 550, 550);
-        gc.moveTo(40, 40);
-        gc.lineTo(80, 50);
-        gc.strokeRect(50, 100, 25.0, 25.0);
-        gc.stroke();*/
+
     }
 
+    void drawGrid() {
 
+        gc.setStroke(Color.LIGHTGRAY);
+        gc.beginPath();
+        for (int i = 0; i < row; i++)
+        {
+            gc.moveTo(0, i * gap);
+            gc.lineTo(1000, i * gap);
+        }
+        for (int j =0 ; j<col; j++)
+        {
+            gc.moveTo(j * gap,0);
+            gc.lineTo( j * gap,700);
+        }
+        gc.stroke();
+    }
+
+    void deleteNode(Point2D target) {
+        Point2D targetToRemove;
+        for (Point2D p : points)
+            if (p.distance(target) < 20) {
+                targetToRemove = p;
+                points.remove(p);
+                break;
+            }
+        draw(null);
+    }
 
 }
