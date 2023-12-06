@@ -173,7 +173,11 @@ public class HelloController {
     void onChangeX() {
         String temp = insertTextFieldX.getText();
         if (!temp.matches("\\d\\.*")) {
-     
+            insertTextFieldX.setText(temp.replaceAll("[^\\d\\.]", ""));
+            insertTextFieldX.deselect();
+            insertTextFieldX.positionCaret(insertTextFieldX.getLength());
+        }
+    }
 
     @FXML
     void onChangeY() {
