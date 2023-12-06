@@ -27,7 +27,33 @@ import static com.gritacademy.pointgraph.HelloApplication.scene;
 
 
 public class HelloController {
-    //final String[] mode= {"DEFAULT","ORDERED_X","NO_LINES","ADD","PAN","MOVE"};
+
+    String turn = "player1";
+
+    class Alrik { //nested
+
+        int age = 31;
+        String name = "Alrik";
+
+        Stuff alriksSaker = Stuff.EQUIPMENT;
+
+
+        public Alrik(int age, String name) {
+            this.age = age;
+            this.name = name;
+            alriksSaker = Stuff.BOOKS;
+            System.out.println(alriksSaker + "hej");
+            System.out.println(alriksSaker.name());
+            switch (alriksSaker) {
+                case BOOKS -> System.out.println("bara böcker nu!!");
+                case EQUIPMENT -> System.out.println("bara böcker nu!!");
+                case GEAR -> System.out.println("bara böcker nu!!");
+            }
+        }
+    }
+
+
+    //final String[] MODE= {"DEFAULT","ORDERED_X","NO_LINES","ADD","PAN","MOVE"};
     private GraphicsContext gc;
     private List<Point2D> points = new ArrayList<>();
     @FXML
@@ -53,19 +79,59 @@ public class HelloController {
     @FXML
     private ChoiceBox<Mode> choiceBox;
     private Tooltip tooltip = new Tooltip("Tooltip Text");
+    private Turn currentTurn = Turn.PLAYER_2;
 
     @FXML
     private void initialize() {
+
+        List<String> arry = new ArrayList<>();
+        arry.add("hej");
+    /*    if(turn=="player1"){
+            // ritar X på cell
+            turn="player2";
+        } else if(turn=="player2"){
+            turn="player1";
+        }*/
+
+/*        if(turn.equals("player1") ){
+            // ritar X på cell
+            turn="player2";
+        } else {
+            turn="player1";
+        }*/
+
+        arry.add("tjenare");
+        arry.add("hejsan");
+
+        arry.add("tjenare");
+        arry.add("hejsan");
+
+        for (String s :arry) {
+            System.out.println(s);
+        }
+        if (currentTurn.ordinal() % 2 == 0)
+            System.out.println("player1 " + currentTurn);
+        else
+            System.out.println("player2 " + currentTurn);
+
+
+        arry.add("tjenare");
+        arry.add("hejsan");
+
+
+        Alrik a = new Alrik(29, "alle");
+        a.age = 31;
+
         choiceBox.setItems(allModes);
         choiceBox.setValue(Mode.DEFAULT);
         choiceBox.getSelectionModel().selectedItemProperty().addListener(
-            new ChangeListener<Mode>() {
-                @Override
-                public void changed(ObservableValue<? extends Mode> observableValue, Mode mode, Mode selected) {
-                    System.out.println(selected);
+                new ChangeListener<Mode>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Mode> observableValue, Mode mode, Mode selected) {
+                        System.out.println(selected);
 
+                    }
                 }
-            }
         );
 
     }

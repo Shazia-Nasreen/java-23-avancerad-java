@@ -2,7 +2,6 @@ package com.gritacademy.treadsgochuchu;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
@@ -27,11 +26,11 @@ public class ThreadsController {
         int z=88888888;
         
         ArrayList<String> sl= new ArrayList<>();
-        for(int i = 0 ; i<100000 ; i++){
+        for(int i = 0 ; i<4000 ; i++){
             sl.add("hej");
         }
         sl.get(20);  // acces test
-        makeBracets(40);
+        makeBrackets(200);
         
         System.out.println("Go!!");
         ProgressBar pb = new ProgressBar();
@@ -45,11 +44,11 @@ public class ThreadsController {
     }
 
     //log n tournament
-     int makeBracets (int n){
+     int makeBrackets(int n){
         if(n==0) return 0;
          n = (int) Math.floor(n/2);
          System.out.println("amount of bracket i tournament: "+n);
-        return makeBracets(n);
+        return makeBrackets(n);
     }
 
 
