@@ -1,11 +1,16 @@
 package com.gritacademy.pointgraph;
 
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
@@ -19,6 +24,7 @@ import javafx.scene.transform.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class HelloController {
 
@@ -44,11 +50,21 @@ public class HelloController {
     private Label welcomeText;
     final private int gap=100;
     private int row=10,col=10; // auto assign
+    private ObservableList<Mode> allModes = FXCollections.observableArrayList(Mode.DEFAULT,Mode.ORDERED_X,Mode.ORDERED_Y);
+  @FXML
+    private ChoiceBox<Mode> choiceBox ;
+
+  @FXML
+  private void initialize(){
+      choiceBox.setItems(allModes);
+      choiceBox.setValue(Mode.DEFAULT);
+  }
 
     public HelloController() {
         canvas = new Canvas(1000, 600);
         canvas.setVisible(true);
         System.out.println("init canvas");
+
     }
 
     @FXML

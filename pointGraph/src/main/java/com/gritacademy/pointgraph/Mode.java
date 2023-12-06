@@ -1,5 +1,5 @@
 package com.gritacademy.pointgraph;
 
 public enum Mode {
-    ADD,PAN,MOVE,ORDERED_X,ORDERED_Y,
+    DEFAULT,ORDERED_X,ORDERED_Y,ADD,PAN,MOVE
 }
