@@ -4,10 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ThreadsController {
     List<Train> trainList = new ArrayList<>();
@@ -17,11 +19,17 @@ public class ThreadsController {
 
     @FXML
     private VBox trainContainer;
+    @FXML
+    private ScrollPane scroll;
 
     @FXML
-    void onStartTheadButton(ActionEvent event) {
+    void onStopButton(ActionEvent event) {
+        System.out.println("Commence operation TrainCrashy!!!");
+    }
+    @FXML
+    void onStartTheadButton(ActionEvent event) throws InterruptedException {
         
-        int x=8;
+/*        int x=8;
         int y=8888;
         int z=88888888;
         
@@ -30,17 +38,28 @@ public class ThreadsController {
             sl.add("hej");
         }
         sl.get(20);  // acces test
-        makeBrackets(200);
-        
+        makeBrackets(200);*/
+
+
+
+
+
         System.out.println("Go!!");
         ProgressBar pb = new ProgressBar();
-        System.out.println(trainContainer.getWidth());
+
         pb.setPrefWidth(trainContainer.getWidth());
-        pb.setProgress(0.5);
+        //pb.setProgress(0.5);
+        trainContainer.getChildren().add(pb);
+
+
+        Train newTrain= new Train(pb); // en ny thread implements Runnable
+        newTrain.start();
+        trainList.add(newTrain);
+        //System.out.println(trainContainer.getWidth());
+        scroll.setVvalue(scroll.getVmax());
             //pb.setMinWidth(Control.USE_PREF_SIZE);
             //pb.setMaxWidth(Control.USE_PREF_SIZE);
             //pb.setMaxWidth(trainContainer.getWidth());
-        trainContainer.getChildren().add(pb);
     }
 
     //log n tournament

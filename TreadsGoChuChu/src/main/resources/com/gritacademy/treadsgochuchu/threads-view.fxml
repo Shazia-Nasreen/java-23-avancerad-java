@@ -7,13 +7,13 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="418.0" prefWidth="610.0" spacing="20.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="com.gritacademy.treadsgochuchu.ThreadsController">
+<VBox alignment="CENTER" prefHeight="418.0" prefWidth="610.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gritacademy.treadsgochuchu.ThreadsController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
 
     <Label fx:id="titel" text="Threads go chu chu!!" />
-   <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+   <ScrollPane fx:id="scroll" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
       <content>
          <VBox fx:id="trainContainer" alignment="TOP_CENTER" prefHeight="200.0">
             <children>
@@ -23,4 +23,5 @@
       </content>
    </ScrollPane>
     <Button onAction="#onStartTheadButton" text="Start a new thread" />
+   <Button onAction="#onStopButton" text="Crash all trains" />
 </VBox>

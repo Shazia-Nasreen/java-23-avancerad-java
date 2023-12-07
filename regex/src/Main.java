@@ -1,5 +1,6 @@
 import java.io.Console;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,6 +11,14 @@ public class Main {
         Date: 2023
     *******************************/
     public static void main(String[] args) {
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        System.out.println(threadSet);
+        System.out.println(Thread.activeCount());
+
+        for (Thread t:
+                threadSet) {
+            System.out.println(t.getName());
+        }
 
         testPatternClass();
 
