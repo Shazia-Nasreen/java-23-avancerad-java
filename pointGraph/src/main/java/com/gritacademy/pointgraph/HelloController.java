@@ -22,8 +22,10 @@ import javafx.scene.transform.Transform;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Vector;
 
 import static com.gritacademy.pointgraph.HelloApplication.scene;
+import static com.gritacademy.pointgraph.Mode.ADD;
 
 
 public class HelloController {
@@ -81,11 +83,31 @@ public class HelloController {
     private Tooltip tooltip = new Tooltip("Tooltip Text");
     private Turn currentTurn = Turn.PLAYER_2;
 
+    private int amountOfGuesses = 2147483647;
+    private byte amountOfGuesses2 = 127; // 128 -> 1 byte -> 8 bits  -> 128 64 32 16 8 4 2 1
+    private short amountOfGuesses3 = 32767;  //32768 -> -> 2 bytes -> 16 bits ->  ... 256 128 64 32 16 8 4 2 1
+    private boolean noLines = false;
+
     @FXML
     private void initialize() {
 
         List<String> arry = new ArrayList<>();
         arry.add("hej");
+
+        int i = 0;
+        while (i < 10)
+            System.out.println(++i);
+
+        Mode mode = ADD;
+
+
+        for (String s : arry)
+            while (i < 3)
+                if (i == 0)
+                    System.out.println("first");
+                else
+                    System.out.println("other");
+
     /*    if(turn=="player1"){
             // ritar X på cell
             turn="player2";
@@ -106,7 +128,7 @@ public class HelloController {
         arry.add("tjenare");
         arry.add("hejsan");
 
-        for (String s :arry) {
+        for (String s : arry) {
             System.out.println(s);
         }
         if (currentTurn.ordinal() % 2 == 0)
@@ -129,7 +151,29 @@ public class HelloController {
                     @Override
                     public void changed(ObservableValue<? extends Mode> observableValue, Mode mode, Mode selected) {
                         System.out.println(selected);
+                        noLines = false;
+                        switch (selected) {
+                            case ORDERED_X -> {
+                                points.sort(new Comparator<Point2D>() {
+                                    @Override
+                                    public int compare(Point2D o1, Point2D o2) {
+                                        return (int) (o1.getX() - o2.getX());
+                                    }
+                                });
 
+                            }
+                            case ORDERED_Y -> {
+                                points.sort(new Comparator<Point2D>() {
+                                    @Override
+                                    public int compare(Point2D o1, Point2D o2) {
+                                        return (int) (o1.getY() - o2.getY());
+                                    }
+                                });
+
+                            }
+                            case NO_LINES -> noLines = true;
+                        }
+                        draw(null);
                     }
                 }
         );
@@ -147,7 +191,7 @@ public class HelloController {
 
     @FXML
     void onChoiceSelected(ContextMenuEvent event) {
-        System.out.println("SELECTED MODE");
+        System.out.println("SELECTED MODE"); //doesnt work
     }
 
     @FXML
@@ -226,6 +270,8 @@ public class HelloController {
 
     void draw(Point2D point) {
         gc = canvas.getGraphicsContext2D();
+
+
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
@@ -242,15 +288,23 @@ public class HelloController {
         for (Point2D p : points) {
             gc.beginPath();
 
-            if (pastP != null) {
+            if (!noLines && pastP != null) {
                 gc.moveTo(pastP.getX(), pastP.getY());
                 gc.lineTo(p.getX(), p.getY());
+                gc.stroke();
             }
             pastP = p;
+
             gc.strokeOval(p.getX() - 5, p.getY() - 5, 10, 10);
-            gc.stroke();
+            //
         }
+
+        gc.fillOval(points.getLast().getX() - 5, points.getLast().getY() - 5, 10, 10);
+
+
         gc.scale(1, -1);
+
+
         gc.translate(0, -canvas.getHeight());
 
 
