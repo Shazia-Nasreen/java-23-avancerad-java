@@ -10,8 +10,13 @@ import java.util.Set;
 
 public class TreadsApplication extends Application {
     public static int order=0;
+    public static Train2 t2;
+    public static Train2 t3;
+
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
+
+
         FXMLLoader fxmlLoader = new FXMLLoader(TreadsApplication.class.getResource("threads-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 720, 540);
         stage.setTitle("Hello!");
@@ -30,13 +35,20 @@ public class TreadsApplication extends Application {
             System.out.println(t.getName());
         }
 
-        for (int i =3; i>0; i--){
+      /*  for (int i =3; i>0; i--){
             System.out.println("countdown:"+i);
             Thread.sleep(500);
-        }
+        }*/
     }
 
     public static void main(String[] args) {
+        t2 = new Train2();
+        t2.start();
+
+        t3 = new Train2();
+        t3.start();
+
+
         launch();
     }
 }

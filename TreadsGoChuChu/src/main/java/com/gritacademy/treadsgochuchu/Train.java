@@ -21,7 +21,7 @@ public class Train extends Thread{
         super();
         id = order++;
         r=new Random();
-        speed= r.nextFloat(0.001f,0.5f);
+        speed= r.nextFloat(0.001f,0.3f);
         pb.setProgress(0.0);
         this.pb = pb;
 

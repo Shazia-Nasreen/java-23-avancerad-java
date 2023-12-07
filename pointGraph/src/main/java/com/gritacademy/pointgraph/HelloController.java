@@ -108,6 +108,14 @@ public class HelloController {
                 else
                     System.out.println("other");
 
+        System.out.println("SLEEP baby");
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("proceed");
     /*    if(turn=="player1"){
             // ritar X på cell
             turn="player2";

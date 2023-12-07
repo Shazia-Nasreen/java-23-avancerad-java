@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.gritacademy.treadsgochuchu.TreadsApplication.t2;
+import static com.gritacademy.treadsgochuchu.TreadsApplication.t3;
+
 public class ThreadsController {
     List<Train> trainList = new ArrayList<>();
 
@@ -25,6 +28,8 @@ public class ThreadsController {
     @FXML
     void onStopButton(ActionEvent event) {
         System.out.println("Commence operation TrainCrashy!!!");
+        t2.interrupt();
+        t3.interrupt();
     }
     @FXML
     void onStartTheadButton(ActionEvent event) throws InterruptedException {

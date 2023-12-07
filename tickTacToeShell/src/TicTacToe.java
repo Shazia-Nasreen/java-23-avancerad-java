@@ -21,7 +21,7 @@ public class TicTacToe extends JFrame {
 
         String[] sa= {  "alrik","viktor","anna","emma"};
 
-        for(int i=0 ; i< sa.length; i++ )
+        for(byte i=0 ; i< sa.length; i++ )
             System.out.println(sa[i]);
 
         int j=0 ;

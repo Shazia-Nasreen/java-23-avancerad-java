@@ -11,12 +11,15 @@ public class Main {
         Date: 2023
     *******************************/
     public static void main(String[] args) {
+
+
+        // Integer.parseInt()
+
         Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         System.out.println(threadSet);
         System.out.println(Thread.activeCount());
 
-        for (Thread t:
-                threadSet) {
+        for (Thread t:threadSet) {
             System.out.println(t.getName());
         }
 
