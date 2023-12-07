@@ -21,7 +21,7 @@ public class Train extends Thread{
         super();
         id = order++;
         r=new Random();
-        speed= r.nextFloat(0.001f,0.3f);
+        speed= r.nextFloat(0.001f,0.1f);
         pb.setProgress(0.0);
         this.pb = pb;
 
@@ -46,7 +46,8 @@ public class Train extends Thread{
                 throw new RuntimeException(e);
             }
             if(r.nextInt(100) <5){ this.interrupt();
-                System.out.println(id+" CRASHED!!!");
+                System.out.printf("%d CRASHED!!! at %.2f%c\n",id,bar*100,'%');
+                System.out.println();
             }
         }
     }

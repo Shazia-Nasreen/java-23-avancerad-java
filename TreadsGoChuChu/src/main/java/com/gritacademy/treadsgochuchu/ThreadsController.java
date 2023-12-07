@@ -30,6 +30,9 @@ public class ThreadsController {
         System.out.println("Commence operation TrainCrashy!!!");
         t2.interrupt();
         t3.interrupt();
+        for (Train t:trainList)
+         t.interrupt();
+
     }
     @FXML
     void onStartTheadButton(ActionEvent event) throws InterruptedException {
