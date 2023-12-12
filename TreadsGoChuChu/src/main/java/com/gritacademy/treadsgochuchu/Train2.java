@@ -1,16 +1,16 @@
 package com.gritacademy.treadsgochuchu;
 
-public class Train2 extends Thread {
+public class Train2 implements Runnable {
 
     Train2() {
         System.out.println("Train created");
     }
 
-    @Override
+  /*  @Override
     public void start() {
-        super.start();
+        //super.start();
     }
-
+*/
 
     @Override
     public void run() {
@@ -24,11 +24,13 @@ public class Train2 extends Thread {
         }
     }
 
+/*
     @Override
     public void interrupt() {
-        super.interrupt();
+        //super.interrupt();
         System.out.println("STOPP");
     }
+*/
 
 
 }

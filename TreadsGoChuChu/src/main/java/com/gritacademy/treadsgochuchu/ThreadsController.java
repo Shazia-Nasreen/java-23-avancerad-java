@@ -28,8 +28,10 @@ public class ThreadsController {
     @FXML
     void onStopButton(ActionEvent event) {
         System.out.println("Commence operation TrainCrashy!!!");
-        t2.interrupt();
-        t3.interrupt();
+       Thread tr= new Thread(t2);   // Runnable
+       tr.start();                  //s
+
+
         for (Train t:trainList)
          t.interrupt();
 
