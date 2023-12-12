@@ -29,9 +29,7 @@ public class OpponentRandomizerController {
      *******************************/
     @FXML
     void onLoadButtonAction(ActionEvent event) {
-
-
-
+        
         leftTitled.getPanes().clear();
         rightTitled.getPanes().clear();
         // Label label = new Label();
@@ -44,8 +42,7 @@ public class OpponentRandomizerController {
             //nameArray = new ArrayList<>();
             //Avslutas med vad somd standard? whitespace?
             while (sc.hasNext()) {
-                String line = sc.nextLine();
-                String[] sa = line.split("\\s", 2);
+                String[] sa = sc.nextLine().split("\\s", 2);
                 System.out.println(Arrays.deepToString(sa));
                 try {
                     key = Integer.parseInt(sa[0]);
@@ -65,10 +62,8 @@ public class OpponentRandomizerController {
                 //System.out.println(hm);
             }
 
-            for (int i : hm.keySet()) {
-                String[] sa = hm.get(i).toArray(new String[2]);
-                paneGroups.add(makeTitlePanes("group " + i, sa));
-            }
+            for (int i : hm.keySet())
+                paneGroups.add(makeTitlePanes("group " + i, hm.get(i).toArray(new String[2])));
 
 
             System.out.println(hm);
@@ -90,7 +85,6 @@ public class OpponentRandomizerController {
                 leftTitled.getPanes().add(makeTitlePanes("1", sa));
             });*/
 
-
             sc.close();
 
         } catch (Exception e) {
@@ -108,8 +102,7 @@ public class OpponentRandomizerController {
                         + "\n"
                         + ((TextArea) rightTitled.getPanes().get(i).getContent()).getText() + "\n";
             }
-            File file = new File("src/result.txt");
-            FileWriter fileWrite = new FileWriter(file);
+            FileWriter fileWrite = new FileWriter( new File("src/result.txt"));
             fileWrite.write(result);
             fileWrite.close();
         } catch (Exception e) {
@@ -118,7 +111,7 @@ public class OpponentRandomizerController {
 
     }
 
-    private TitledPane makeTitlePanes(String groupName, String[] members) {
+    private TitledPane makeTitlePanes(String groupName, String  ...members) {
         TitledPane tp = new TitledPane(groupName, null);
         //tp.setExpanded(false);
         String result = "";
