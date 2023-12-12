@@ -42,13 +42,6 @@ public class TreadsApplication extends Application {
     }
 
     public static void main(String[] args) {
-    /*    t2 = new Train2();
-        t2.start();
-
-        t3 = new Train2();
-        t3.start();*/
-
-
         launch();
     }
 }

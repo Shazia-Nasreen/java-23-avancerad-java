@@ -29,7 +29,7 @@ public class OpponentRandomizerController {
      *******************************/
     @FXML
     void onLoadButtonAction(ActionEvent event) {
-        
+
         leftTitled.getPanes().clear();
         rightTitled.getPanes().clear();
         // Label label = new Label();
@@ -65,7 +65,6 @@ public class OpponentRandomizerController {
             for (int i : hm.keySet())
                 paneGroups.add(makeTitlePanes("group " + i, hm.get(i).toArray(new String[2])));
 
-
             System.out.println(hm);
             //System.out.println(paneGroups);
             Collections.shuffle(paneGroups);
@@ -73,6 +72,8 @@ public class OpponentRandomizerController {
                 if (i % 2 == 0) leftTitled.getPanes().add(paneGroups.get(i));
                 else rightTitled.getPanes().add(paneGroups.get(i));
 
+    /*        rightTitled.getPanes().get(0).setExpanded(true);  action listener
+            leftTitled.getPanes().get(0).setExpanded(true);*/
             // nameArray.add(sc.nextLine());
       /*      for (ArrayList<String> l:leftGroups) {
                 String [] sa=((String[]) l.toArray());

@@ -45,7 +45,8 @@ public class Train extends Thread{
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if(r.nextInt(100) <5){ this.interrupt();
+            if(r.nextInt(100) <5){
+                this.interrupt();
                 System.out.printf("%d CRASHED!!! at %.2f%c\n",id,bar*100,'%');
                 System.out.println();
             }

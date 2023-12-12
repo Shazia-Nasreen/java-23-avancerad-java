@@ -9,7 +9,7 @@
 5 Erik Werther
 5 Geta Kelemwork
 6 Joel Bech
-6 Johanna Pettersson
+13 Johanna Pettersson
 7 Karl Kowal
 7 Kean von Wowern
 8 Linus Lindberg
@@ -20,12 +20,12 @@
 10 Neil Elvirsson
 11 Nikolina Vikberg
 11 Oliver Nilsson
-Oliver Schuller
-Oskar Karlsson
-Reidar Thorsen
+13 Oliver Schuller
+12 Oskar Karlsson
+6 Reidar Thorsen
 Rositsa Nikolova
 Salim bin otong muhammad
-Sam Danielsson
+12Sam Danielsson
 Sami Eltarras
 Samuel Bromée
 Shazia Nasreen
