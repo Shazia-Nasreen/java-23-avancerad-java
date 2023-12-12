@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.util.*;
 
 public class OpponentRandomizerController {
@@ -22,8 +23,15 @@ public class OpponentRandomizerController {
     @FXML
     private Label welcomeText;
 
+    /*****************************
+     Author : Alrik He
+     Date: 2023
+     *******************************/
     @FXML
     void onLoadButtonAction(ActionEvent event) {
+
+
+
         leftTitled.getPanes().clear();
         rightTitled.getPanes().clear();
         // Label label = new Label();
@@ -39,7 +47,6 @@ public class OpponentRandomizerController {
                 String line = sc.nextLine();
                 String[] sa = line.split("\\s", 2);
                 System.out.println(Arrays.deepToString(sa));
-
                 try {
                     key = Integer.parseInt(sa[0]);
                 } catch (Exception ne) {
@@ -55,9 +62,7 @@ public class OpponentRandomizerController {
                             add(sa[1]);
                         }
                     });
-
-                System.out.println(hm);
-
+                //System.out.println(hm);
             }
 
             for (int i : hm.keySet()) {
@@ -85,8 +90,28 @@ public class OpponentRandomizerController {
                 leftTitled.getPanes().add(makeTitlePanes("1", sa));
             });*/
 
+
             sc.close();
 
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        try {
+            String result = "";
+            int maxLoops = Math.min(leftTitled.getPanes().size() + 1, rightTitled.getPanes().size() + 1);
+            for (int i = 0; i < maxLoops - 1; i++) {
+                result += ((TextArea) leftTitled.getPanes().get(i).getContent()).getText()
+                        + leftTitled.getPanes().get(i).getText()
+                        + " - vs - "
+                        + rightTitled.getPanes().get(i).getText()
+                        + "\n"
+                        + ((TextArea) rightTitled.getPanes().get(i).getContent()).getText() + "\n";
+            }
+            File file = new File("src/result.txt");
+            FileWriter fileWrite = new FileWriter(file);
+            fileWrite.write(result);
+            fileWrite.close();
         } catch (Exception e) {
             System.out.println(e);
         }
