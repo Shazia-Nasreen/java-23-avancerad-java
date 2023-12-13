@@ -68,10 +68,18 @@ public class OpponentRandomizerController {
             System.out.println(hm);
             //System.out.println(paneGroups);
             Collections.shuffle(paneGroups);
-            for (int i = 0; i < paneGroups.size() - 1; i++)
+            for (int i = 0; i < paneGroups.size() - 1; i++) {
                 if (i % 2 == 0) leftTitled.getPanes().add(paneGroups.get(i));
                 else rightTitled.getPanes().add(paneGroups.get(i));
+                int j = i % 2 + i; //modulus för par Samuls ide
+                paneGroups.get(j).expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
+                    paneGroups.get(j + 1).setExpanded(isNowExpanded);
+                });
+                paneGroups.get(j + 1).expandedProperty().addListener((obs, wasExpanded, isNowExpanded) -> {
+                    paneGroups.get(j).setExpanded(isNowExpanded);
+                });
 
+            }
     /*        rightTitled.getPanes().get(0).setExpanded(true);  action listener
             leftTitled.getPanes().get(0).setExpanded(true);*/
             // nameArray.add(sc.nextLine());
@@ -103,7 +111,7 @@ public class OpponentRandomizerController {
                         + "\n"
                         + ((TextArea) rightTitled.getPanes().get(i).getContent()).getText() + "\n";
             }
-            FileWriter fileWrite = new FileWriter( new File("src/result.txt"));
+            FileWriter fileWrite = new FileWriter(new File("src/result.txt"));
             fileWrite.write(result);
             fileWrite.close();
         } catch (Exception e) {
@@ -112,7 +120,7 @@ public class OpponentRandomizerController {
 
     }
 
-    private TitledPane makeTitlePanes(String groupName, String  ...members) {
+    private TitledPane makeTitlePanes(String groupName, String... members) {
         TitledPane tp = new TitledPane(groupName, null);
         //tp.setExpanded(false);
         String result = "";
