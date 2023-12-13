@@ -54,7 +54,8 @@ public class Main {
             //URL url = new URL(databaseUrl + databasePath);
             //URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/.json");
          //   URL url = new URL("https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=0.5");  // Cheapshark
-            URL url = new URL("https://pokeapi.co/api/v2/pokemon/ditto");  // Cheapshark
+           // URL url = new URL("https://pokeapi.co/api/v2/pokemon/ditto");  // Cheapshark
+            URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/alrikHe/eyeColor.json");  // Cheapshark
 
             // Open a connection to the URL
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
