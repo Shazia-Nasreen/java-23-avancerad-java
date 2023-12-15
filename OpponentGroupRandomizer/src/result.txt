@@ -1,36 +1,48 @@
-Linus Lindberg
-Lovisa Hjalmar
-group 8 - vs - group 9
-Malcolm Alm
-Mashreka Binte Mannan
-
-Mohammed Mohammed
-Neil Elvirsson
-group 10 - vs - group 12
-Oskar Karlsson
+Andreas Jabrell
+Joel Bech
+group 1 - vs - group 12
+Adam Barnell
 null
 
-Ardi Fetiu
-Carl Sundberg
-group 4 - vs - group 3
-Alexandra Nimhagen
-Andreas Jabrell
+Kean von Wowern
+Oliver Schuller
+group 6 - vs - group 7
+Erik Werther
+Neil Elvirsson
 
-Aleksander Bjelk
-Alexander Jansson
-group 2 - vs - group 11
-Nikolina Vikberg
-Oliver Nilsson
+Geta Kelemwork
+null
+group 13 - vs - group 15
+Johanna Pettersson
+null
 
 Karl Kowal
-Kean von Wowern
-group 7 - vs - group 1
-Adam Barnell
-Adam Berrabia
+null
+group 2 - vs - group 11
+Ardi Fetiu
+Shayaan Ahmed
 
-Joel Bech
+Nikolina Vikberg
+Sam Danielsson
+group 5 - vs - group 14
+Rositsa Nikolova
+null
+
+Mohammed Mohammed
+Sami Eltarras
+group 9 - vs - group 8
+Carl Sundberg
+null
+
+Linus Lindberg
+null
+group 10 - vs - group 4
 Reidar Thorsen
-group 6 - vs - group 5
-Erik Werther
-Geta Kelemwork
+Samuel Bromée
+
+Aleksander Bjelk
+Oliver Nilsson
+group 0 - vs - group 3
+Alexandra Nimhagen
+Lovisa Hjalmar
 

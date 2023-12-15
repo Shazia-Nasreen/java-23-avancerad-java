@@ -1,5 +1,6 @@
 
-import com.eclipsesource.json.Json;
+import com.eclipsesource.json.*;
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 import com.google.gson.Gson;
@@ -37,8 +38,8 @@ public class Main {
         }
         while (inputLine  != null);
         in.close();*/
-        getRequests(".json");
-        //postRequest("alrik.json");
+        //)getRequests(".json");
+        postRequest("alrik.json");
         //putRequest("alrik/name.json");
         //patchRequest("alrik/name.json");
         //deleteRequests("alrik/name/memo.json");
@@ -55,7 +56,8 @@ public class Main {
             //URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/.json");
          //   URL url = new URL("https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=0.5");  // Cheapshark
            // URL url = new URL("https://pokeapi.co/api/v2/pokemon/ditto");  // Cheapshark
-            URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/alrikHe/eyeColor.json");  // Cheapshark
+           // URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/alrikHe/eyeColor.json");  // Cheapshark
+            URL url = new URL("https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=66fe6923319ff73ef10de2fc1af0a10e");  // Cheapshark
 
             // Open a connection to the URL
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -78,13 +80,20 @@ public class Main {
                 reader.close();
 
                 // Handle the response data
-                System.out.println("Response from Firebase Realtime Database:");
-                //System.out.println(response);
+                //System.out.println("Response from Firebase Realtime Database:");
+                System.out.println(response);
 
-                JsonValue jv = Json.parse(String.valueOf(response));
+                JsonValue jv = Json.parse(response.toString());
+                JsonObject jo = jv.asObject();
+                JsonArray ja = jo.get("weather").asArray();
+                JsonObject inne = ja.get(0).asObject();
+                String description = inne.getString("description","cant find the stuff!!!");
+                System.out.println(description);
+
+              /*  JsonValue jv = Json.parse(String.valueOf(response));
                 JsonObject jo = jv.asObject().get("sprites").asObject();
                 String s = jo.get("back_default").asString();
-                System.out.println(s);
+                System.out.println(s);*/
                //ta = new TextArea(response.toString());
             } else { //404 403 402 etc error koder
                 // Handle the error response
@@ -207,6 +216,14 @@ public class Main {
                     // put("rememberLista", new String[]{"eat lunch", "kom i tid ", "rätta","närvaro check"});
                 }
             });
+
+
+            String trafkverket = "<REQUEST>\n" +
+                    "  <LOGIN authenticationkey=\"4cb2c244d76f4cd9858bd3de1d66c180\"/>\n" +
+                    "  <QUERY objecttype=\"TrainMessage\" schemaversion=\"1.7\" limit=\"10\">\n" +
+                    "    <FILTER></FILTER>\n" +
+                    "  </QUERY>\n" +
+                    "</REQUEST>";
             // kör nysaste protocoll https
             HttpClient httpClient = HttpClient.newBuilder()
                     .version(HttpClient.Version.HTTP_2)
@@ -215,12 +232,16 @@ public class Main {
             //String jsonInputString = new Gson().toJson(dataMap);
             String jsonInputString = "{ \"fullname\": \"Alrik He\" ,\"age\": 50 }";
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(databaseUrl + databasePath))
-                    .method("POST", HttpRequest.BodyPublishers.ofString(jsonInputString))
-                    .header("Content-Type", "application/json")
+                    .uri(URI.create("https://api.trafikinfo.trafikverket.se/v2/data.json"))
+                    .method("POST", HttpRequest.BodyPublishers.ofString(trafkverket))
+                    .header("Content-Type", "application/xml")
                     .build();
             HttpResponse response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println(response);
+            //System.out.println(response.body());
+
+            JsonValue jv = Json.parse((String) response.body());
+            String stuff = jv.asObject().get("RESPONSE").asObject().get("RESULT").asArray().get(0).asObject().get("TrainMessage").asArray().get(0).asObject().getString("ExternalDescription","");
+            System.out.println(stuff+"!!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -3,6 +3,8 @@ import com.eclipsesource.json.Json;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.lang.module.FindException;
 import java.util.ArrayList;
@@ -81,6 +83,19 @@ public class Main {
         arO.add(h6);
         arO.add(b1);
 
+        JButton jb = new JButton("hejsa");
+
+
+        jb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        jb.addActionListener( e->{
+
+        }  );
 
         h6.unique = false;
         h3.unique = false;

@@ -1,32 +1,32 @@
-1 Adam Barnell
-1 Adam Berrabia
-2 Aleksander Bjelk
-2 Alexander Jansson
+12 Adam Barnell
+Adam Berrabia
+0 Aleksander Bjelk
+Alexander Jansson
 3 Alexandra Nimhagen
-3 Andreas Jabrell
-4 Ardi Fetiu
-4 Carl Sundberg
-5 Erik Werther
-5 Geta Kelemwork
-6 Joel Bech
-13 Johanna Pettersson
-7 Karl Kowal
-7 Kean von Wowern
-8 Linus Lindberg
-8 Lovisa Hjalmar
-9 Malcolm Alm
-9 Mashreka Binte Mannan
-10 Mohammed Mohammed
-10 Neil Elvirsson
-11 Nikolina Vikberg
-11 Oliver Nilsson
-13 Oliver Schuller
-12 Oskar Karlsson
-6 Reidar Thorsen
-Rositsa Nikolova
+1 Andreas Jabrell
+11 Ardi Fetiu
+8 Carl Sundberg
+7 Erik Werther
+13 Geta Kelemwork
+1 Joel Bech
+15 Johanna Pettersson
+2 Karl Kowal
+6 Kean von Wowern
+10 Linus Lindberg
+3 Lovisa Hjalmar
+Malcolm Alm
+16 Mashreka Binte Mannan
+9 Mohammed Mohammed
+7 Neil Elvirsson
+5 Nikolina Vikberg
+0 Oliver Nilsson
+6 Oliver Schuller
+Oskar Karlsson
+4 Reidar Thorsen
+14 Rositsa Nikolova
 Salim bin otong muhammad
-12Sam Danielsson
-Sami Eltarras
-Samuel Bromée
+5 Sam Danielsson
+9 Sami Eltarras
+4 Samuel Bromée
 Shazia Nasreen
-Shayaan Ahmed
+11 Shayaan Ahmed
