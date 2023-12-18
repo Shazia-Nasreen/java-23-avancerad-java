@@ -3,6 +3,7 @@ import com.eclipsesource.json.Json;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,7 +16,21 @@ public class Main {
 
     public static void main(String[] args) {
 
+
+        JFrame jf = new JFrame();
         //polymorphDemo();
+        JDialog jd= new JDialog(jf, "dialog Box");
+        Button b = new Button("close");
+        jd.setBounds(0,0,200,200);
+        jd.setVisible(true);
+        jd.add(b);
+        b.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("CLOSE");
+                jd.dispose();
+            }
+        });
 
 
         JFileChooser j = new JFileChooser("src");

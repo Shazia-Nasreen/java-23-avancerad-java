@@ -18,6 +18,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Flow;
@@ -39,13 +40,19 @@ public class Main {
         while (inputLine  != null);
         in.close();*/
         //)getRequests(".json");
-        postRequest("alrik.json");
+        //postRequest("alrik.json");
         //putRequest("alrik/name.json");
         //patchRequest("alrik/name.json");
         //deleteRequests("alrik/name/memo.json");
+        myFunction( 31,"hej" , "san" ,"!!!");
     }
 
 
+
+    static void myFunction(int age,String... s ){
+        System.out.println(Arrays.deepToString( s ));
+
+    }
     public static void getRequests(String databasePath) {
         String databaseUrl = "https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/";
 
@@ -54,9 +61,9 @@ public class Main {
             // Create the URL for the HTTP GET request
             //URL url = new URL(databaseUrl + databasePath);
             //URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/.json");
-         //   URL url = new URL("https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=0.5");  // Cheapshark
-           // URL url = new URL("https://pokeapi.co/api/v2/pokemon/ditto");  // Cheapshark
-           // URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/alrikHe/eyeColor.json");  // Cheapshark
+            //   URL url = new URL("https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=0.5");  // Cheapshark
+            // URL url = new URL("https://pokeapi.co/api/v2/pokemon/ditto");  // Cheapshark
+            // URL url = new URL("https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/alrikHe/eyeColor.json");  // Cheapshark
             URL url = new URL("https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=66fe6923319ff73ef10de2fc1af0a10e");  // Cheapshark
 
             // Open a connection to the URL
@@ -87,14 +94,14 @@ public class Main {
                 JsonObject jo = jv.asObject();
                 JsonArray ja = jo.get("weather").asArray();
                 JsonObject inne = ja.get(0).asObject();
-                String description = inne.getString("description","cant find the stuff!!!");
+                String description = inne.getString("description", "cant find the stuff!!!");
                 System.out.println(description);
 
               /*  JsonValue jv = Json.parse(String.valueOf(response));
                 JsonObject jo = jv.asObject().get("sprites").asObject();
                 String s = jo.get("back_default").asString();
                 System.out.println(s);*/
-               //ta = new TextArea(response.toString());
+                //ta = new TextArea(response.toString());
             } else { //404 403 402 etc error koder
                 // Handle the error response
                 System.out.println("Error response code: " + responseCode);
@@ -107,7 +114,6 @@ public class Main {
         }
 
     }
-
 
     public static void putRequest(String databasePath) {
 
@@ -130,15 +136,17 @@ public class Main {
             dataMap.putAll(new HashMap<String, Object>() {
                 {
                     put("memo", " köp mjölk!!");
-                   // put("age", 33);
+                    // put("age", 33);
                     // put("creditcardNr", "8834 1234 8156 8888");
-                   // put("eyeColor", "black");
-                   // put("rememberLista", new String[]{"eat lunch", "kom i tid ", "rätta","närvaro check"});
+                    // put("eyeColor", "black");
+                    // put("rememberLista", new String[]{"eat lunch", "kom i tid ", "rätta","närvaro check"});
                 }
             });
 
 
-            ArrayList<String> s= new ArrayList<>(){{ addAll(List.of("alrik","Joel","Sam","Linus","Ardi"));}};
+            ArrayList<String> s = new ArrayList<>() {{
+                addAll(List.of("alrik", "Joel", "Sam", "Linus", "Ardi"));
+            }};
 /*          dataMap.put("name", "Alrik");
             dataMap.put("age", 31);
             dataMap.put("creditcardNr", "1234 1234 8156 3123");
@@ -166,6 +174,7 @@ public class Main {
             e.printStackTrace();
         }
     }
+
     public static void patchRequest(String databasePath) {
 
 
@@ -194,12 +203,13 @@ public class Main {
                     .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonInputString))
                     .header("Content-Type", "application/json")
                     .build();
-            HttpResponse response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+            HttpResponse response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public static void postRequest(String databasePath) {
 
 
@@ -236,17 +246,16 @@ public class Main {
                     .method("POST", HttpRequest.BodyPublishers.ofString(trafkverket))
                     .header("Content-Type", "application/xml")
                     .build();
-            HttpResponse response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+            HttpResponse response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             //System.out.println(response.body());
 
             JsonValue jv = Json.parse((String) response.body());
-            String stuff = jv.asObject().get("RESPONSE").asObject().get("RESULT").asArray().get(0).asObject().get("TrainMessage").asArray().get(0).asObject().getString("ExternalDescription","");
-            System.out.println(stuff+"!!!!");
+            String stuff = jv.asObject().get("RESPONSE").asObject().get("RESULT").asArray().get(0).asObject().get("TrainMessage").asArray().get(0).asObject().getString("ExternalDescription", "");
+            System.out.println(stuff + "!!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     public static void deleteRequests(String databasePath) {
         String databaseUrl = "https://mobilt-java-22-default-rtdb.europe-west1.firebasedatabase.app/";
@@ -291,5 +300,4 @@ public class Main {
         }
 
     }
-
 }

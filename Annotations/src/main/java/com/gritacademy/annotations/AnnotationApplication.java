@@ -65,10 +65,9 @@ public class AnnotationApplication extends Application {
      @param args default java parameter
      */
     public static void main(String[] args) {
-
-
-
         launch();
-
     }
+
+    public String
+
 }
