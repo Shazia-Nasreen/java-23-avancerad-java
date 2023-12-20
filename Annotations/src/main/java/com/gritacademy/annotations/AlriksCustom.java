@@ -1,6 +1,6 @@
 package com.gritacademy.annotations;
 
-public @interface alrksCustom {
+public @interface AlriksCustom {
 
     int age();
     String name() default "Alrik";

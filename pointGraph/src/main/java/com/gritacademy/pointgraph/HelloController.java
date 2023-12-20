@@ -19,10 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import static com.gritacademy.pointgraph.HelloApplication.scene;
 import static com.gritacademy.pointgraph.Mode.ADD;
@@ -161,24 +158,8 @@ public class HelloController {
                         System.out.println(selected);
                         noLines = false;
                         switch (selected) {
-                            case ORDERED_X -> {
-                                points.sort(new Comparator<Point2D>() {
-                                    @Override
-                                    public int compare(Point2D o1, Point2D o2) {
-                                        return (int) (o1.getX() - o2.getX());
-                                    }
-                                });
-
-                            }
-                            case ORDERED_Y -> {
-                                points.sort(new Comparator<Point2D>() {
-                                    @Override
-                                    public int compare(Point2D o1, Point2D o2) {
-                                        return (int) (o1.getY() - o2.getY());
-                                    }
-                                });
-
-                            }
+                            case ORDERED_X -> points.sort((o1, o2) -> (int) (o1.getX() - o2.getX()));
+                            case ORDERED_Y -> points.sort((o1, o2) -> (int) (o1.getY() - o2.getY()));
                             case NO_LINES -> noLines = true;
                         }
                         draw(null);
@@ -193,9 +174,7 @@ public class HelloController {
         canvas.setVisible(true);
         System.out.println("init canvas");
         //Tooltip.install(canvas, tooltip);
-
     }
-
 
     @FXML
     void onChoiceSelected(ContextMenuEvent event) {
@@ -279,7 +258,6 @@ public class HelloController {
     void draw(Point2D point) {
         gc = canvas.getGraphicsContext2D();
 
-
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
@@ -295,31 +273,20 @@ public class HelloController {
         Point2D pastP = null;
         for (Point2D p : points) {
             gc.beginPath();
-
             if (!noLines && pastP != null) {
                 gc.moveTo(pastP.getX(), pastP.getY());
                 gc.lineTo(p.getX(), p.getY());
                 gc.stroke();
             }
             pastP = p;
-
             gc.strokeOval(p.getX() - 5, p.getY() - 5, 10, 10);
-            //
         }
-
         gc.fillOval(points.getLast().getX() - 5, points.getLast().getY() - 5, 10, 10);
-
-
         gc.scale(1, -1);
-
-
         gc.translate(0, -canvas.getHeight());
-
-
     }
 
     void drawGrid() {
-
         gc.setStroke(Color.LIGHTGRAY);
         gc.beginPath();
         for (int i = 0; i < row; i++) {
