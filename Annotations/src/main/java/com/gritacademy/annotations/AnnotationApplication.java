@@ -93,8 +93,7 @@ public class AnnotationApplication extends Application {
     }
     public void runBrowser(String _url) throws IOException {
         Runtime rt = Runtime.getRuntime();
-        //String url = _url;
-        String url = "https://google.com";
+        String url = _url;
         if (System.getProperty("os.name").contains("Windows"))
             rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
         else  //mac
