@@ -2,10 +2,10 @@
 ## github test
 ### by Alrik
 
-```
-code java
+``` java
+//code java
 
-var x = 5
+int x = 5;
 ```
 - First item
 - Second item
@@ -13,13 +13,13 @@ var x = 5
 C:\Users\Alrik\Documents\java-23---avancerad-java
 
 ──────────
-Onsdag 13:00 - 15:00.
+## Onsdag 13:00 - 15:00.
 
-Join Zoom Meeting
-https://us06web.zoom.us/j/3459911118?omn=82889488595
+## Join Zoom Meeting
+[zoomlinken klicka här!](https://us06web.zoom.us/j/3459911118?omn=82889488595)
 
-Meeting ID: 345 991 1118
+## Meeting ID: 345 991 1118
 
 
 ──────────
-by Alrik He
+*by Alrik He*
