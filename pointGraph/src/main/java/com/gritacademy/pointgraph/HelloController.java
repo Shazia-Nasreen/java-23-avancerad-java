@@ -27,7 +27,12 @@ import static com.gritacademy.pointgraph.Mode.ADD;
 
 public class HelloController {
 
+    public static final int POINT_SIZE = 50;
+    public static final double MAGNITUDE = 15.5d;
     String turn = "player1";
+    private Point2D offset = new Point2D(0, 0);
+
+    private Point2D invertedOffset = new Point2D(offset.getX() * -1, offset.getY() * -1);
 
     class Alrik { //nested
 
@@ -88,7 +93,7 @@ public class HelloController {
     @FXML
     private void initialize() {
 
-        List<String> arry = new ArrayList<>();
+  /*      List<String> arry = new ArrayList<>();
         arry.add("hej");
 
         int i = 0;
@@ -111,7 +116,7 @@ public class HelloController {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         System.out.println("proceed");
     /*    if(turn=="player1"){
             // ritar X på cell
@@ -127,7 +132,7 @@ public class HelloController {
             turn="player1";
         }*/
 
-        arry.add("tjenare");
+   /*     arry.add("tjenare");
         arry.add("hejsan");
 
         arry.add("tjenare");
@@ -148,7 +153,7 @@ public class HelloController {
 
         Alrik a = new Alrik(29, "alle");
         a.age = 31;
-
+*/
         choiceBox.setItems(allModes);
         choiceBox.setValue(Mode.DEFAULT);
         choiceBox.getSelectionModel().selectedItemProperty().addListener(
@@ -185,19 +190,28 @@ public class HelloController {
     void onCanvasClick(MouseEvent event) {
         System.out.println(event.getButton());
         if (event.getButton() == MouseButton.SECONDARY)
-            deleteNode(new Point2D(event.getX(), canvas.getHeight() - event.getY()));
+            deleteNode(new Point2D(event.getX()+invertedOffset.getX(), canvas.getHeight() - event.getY() +offset.getY()));
         else
-            draw(new Point2D(event.getX(), canvas.getHeight() - event.getY()));
+            draw(new Point2D(event.getX()+invertedOffset.getX(), canvas.getHeight() - event.getY()+ offset.getY())); //creatar
     }
 
     @FXML
     void moveHorizontal(MouseEvent event) {
-        System.out.println("slide H " + hSlide.getValue());
+        Double hVal= hSlide.getValue()*MAGNITUDE;
+        System.out.println("slide H " + hVal);
+       offset = new Point2D(hVal,offset.getY());
+      invertedOffset = new Point2D(-hVal,-offset.getY());
+        draw(null);
     }
 
     @FXML
     void moveVertical(MouseEvent event) {
-        System.out.println("slide V " + vSlide.getValue());
+        Double vVal = vSlide.getValue()*MAGNITUDE;
+        System.out.println("slide V " + vVal);
+         offset = new Point2D(offset.getX(), vVal);
+          invertedOffset = new Point2D(-offset.getX(), -vVal);
+
+        draw(null);
     }
 
     @FXML
@@ -226,7 +240,7 @@ public class HelloController {
         final int CANVAS_H = (int) canvas.getHeight();
         scene.setCursor(Cursor.DEFAULT);
         for (Point2D p : points)
-            if (p.distance(new Point2D(event.getX(), CANVAS_H - event.getY())) < 10) {
+            if (p.distance(new Point2D(event.getX()+invertedOffset.getX(), CANVAS_H - event.getY()+offset.getY())) < POINT_SIZE*0.5) {
                 // canvas.setTooltip(new Tooltip("Tooltip for Button"));
                 System.out.println(p);
                 tooltip.setText(event.getX() + ":" + event.getY());
@@ -261,7 +275,7 @@ public class HelloController {
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        gc.translate(0, canvas.getHeight());
+        gc.translate(offset.getX(), canvas.getHeight() + offset.getY());
         gc.scale(1, -1);
         drawGrid();
 
@@ -279,11 +293,11 @@ public class HelloController {
                 gc.stroke();
             }
             pastP = p;
-            gc.strokeOval(p.getX() - 5, p.getY() - 5, 10, 10);
+            gc.strokeOval(p.getX() - POINT_SIZE * .5, p.getY() - POINT_SIZE * .5, POINT_SIZE, POINT_SIZE);
         }
-        gc.fillOval(points.getLast().getX() - 5, points.getLast().getY() - 5, 10, 10);
+        gc.fillOval(points.getLast().getX() - POINT_SIZE * .5, points.getLast().getY() - POINT_SIZE * .5, POINT_SIZE, POINT_SIZE);
         gc.scale(1, -1);
-        gc.translate(0, -canvas.getHeight());
+        gc.translate(invertedOffset.getX(), -canvas.getHeight() + invertedOffset.getY());
     }
 
     void drawGrid() {

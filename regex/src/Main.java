@@ -15,7 +15,7 @@ public class Main {
 
         // Integer.parseInt()
 
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+     /*   Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
         System.out.println(threadSet);
         System.out.println(Thread.activeCount());
 
@@ -23,7 +23,7 @@ public class Main {
             System.out.println(t.getName());
         }
 
-        testPatternClass();
+        testPatternClass();*/
 
 
 
@@ -45,6 +45,7 @@ public class Main {
 
             boolean found = false;
             while (matcher.find()) {
+
                 pe = e;
                /* System.out.println(
                         matcher.group()
@@ -55,7 +56,8 @@ public class Main {
                 System.out.print(text.substring(pe, s));
 
                 String mark = matcher.group();
-                String marked = String.join("\u0332", mark.split("", -1));
+               // String marked = String.join("\u0332", mark.split("", -1));
+                String marked = String.join("̲", mark.split("", -1));
                 System.out.print(marked);
                 found = true;
             }
