@@ -161,8 +161,8 @@ public class PointController {
         canvasWidth = (short) canvas.getWidth();
         canvasHeight = (short) canvas.getHeight();
 
-        row = Math.round(canvasHeight / gap);
-        col = Math.round(canvasWidth / gap);
+        row = (short) Math.floor(canvasHeight / gap);
+        col = (short) Math.floor(canvasWidth / gap);
 /*        offset = new Point2D(canvasWidth * MAGNITUDE, canvasHeight * MAGNITUDE);
         hSlide.setValue(canvasWidth * 0.5);
         vSlide.setValue(canvasHeight * 0.5);*/
@@ -226,11 +226,7 @@ public class PointController {
         switch (event.getButton()) {
             case MouseButton.PRIMARY -> {
                 selectedNode(event);
-                if (mouseMode == Mode.MOVE) {
-                    System.out.println(points.indexOf(selectedNode) + " DOWN");
-
-                    System.out.println("move point");
-                } else
+                if (mouseMode == Mode.DEFAULT)
                     draw(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())); //creatar
 
             }
@@ -295,21 +291,24 @@ public class PointController {
             case Mode.MOVE -> {
                 // selectedNode = new Point2D(event.getX() + offset.getX(), event.getX() + offset.getY());
                 // if(selectedNode!=null) points.set(points.indexOf(selectedNode), new Point2D(event.getX() + invertedOffset.getX()+50, canvasHeight - event.getY() + offset.getY()+50));
-
                 System.out.println("released point");
                 selectedNode = -1;
                 mouseMode = Mode.DEFAULT;
             }
             case Mode.PAN -> {
-
                 //if (event.getButton() == MouseButton.MIDDLE) {
                 System.out.println("released");
                 scene.setCursor(Cursor.CROSSHAIR);
                 mouseMode = Mode.DEFAULT;
-
             }
 
         }
+    }
+
+    @FXML
+    void onCanvasExit() {
+        scene.setCursor(Cursor.DEFAULT);
+
     }
 
     @FXML
@@ -383,14 +382,13 @@ public class PointController {
 
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvasWidth, canvasHeight);
+        drawGrid();
 
         gc.translate(offset.getX(), canvasHeight + offset.getY());
         gc.scale(1, -1);
-        drawGrid();
 
         gc.setFill(Color.GREY);
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(1.0);
 
         Point2D pastP = null;
         if (!points.isEmpty()) {
@@ -422,19 +420,26 @@ public class PointController {
         gc.setStroke(Color.LIGHTGRAY);
         gc.beginPath();
 
-        for (byte i = -1; i <= row; i++)  //row
-            drawLine(0 - gap, canvasWidth, i * gap, i * gap);
-
-        for (byte j = -1; j <= col; j++)   // col
-            drawLine(j * gap, j * gap, 0 - gap, canvasHeight);
+        for (byte i = -1; i <= row; i++) {//row
+            drawLine(0-gap , canvasWidth+gap, i * gap, i * gap);
+            gc.strokeText(gap*(i +(int)((offset.getY())/gap)  )  + "", 0+5,  canvasHeight-i * gap + offset.getY() % gap+ 10);
+        }
+        for (byte j = -1; j <= col; j++) {   // col
+            drawLine(j * gap, j * gap, 0 -gap, canvasHeight+gap);
+            gc.strokeText(gap*(j +(int)(invertedOffset.getX()/gap)  )  + "", j * gap + offset.getX() % gap+ 5,  canvasHeight- 10);
+        }
 
         gc.stroke();
     }
 
     private void drawLine(int x, int x2, int y, int y2) {
-        gc.moveTo(x - offset.getX() + offset.getX() % gap + gap, y + offset.getY() - offset.getY() % gap + gap);
-        gc.lineTo(x2 - offset.getX() + offset.getX() % gap + gap, y2 + offset.getY() - offset.getY() % gap + gap);
+        gc.moveTo(x  + offset.getX() % gap , y  + offset.getY() % gap );
+        gc.lineTo(x2 + offset.getX() % gap , y2  + offset.getY() % gap );
     }
+    /* private void drawLine(int x, int x2, int y, int y2) {
+        gc.moveTo(x - offset.getX() + offset.getX() % gap + gap, y + offset.getY() + offset.getY() % gap + gap);
+        gc.lineTo(x2 - offset.getX() + offset.getX() % gap + gap, y2 + offset.getY() % gap + gap);
+    }*/
 
 
     void deleteNode(Point2D target) {
@@ -447,26 +452,13 @@ public class PointController {
     }
 
     void selectedNode(MouseEvent event) {
-/*        for (Point2D p : points)
-            if (p.distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS) {
-                selectedNode = p;
-                mouseMode = Mode.MOVE;
-                System.out.println("selected point !!!");
-                break;
-            }
-        */
-        if (mouseMode != Mode.MOVE) for (int i = 0; i < points.size() ; i++) {
+        if (mouseMode != Mode.MOVE) for (int i = 0; i < points.size(); i++)
             if (points.get(i).distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS) {
                 selectedNode = i;
-                // points.set(i, new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()+50));
-                // points.set(points.indexOf(selectedNode), new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()+50));
-
                 mouseMode = Mode.MOVE;
                 System.out.println("selected point !!!!!");
                 break;
             }
-        }
-        //draw();
     }
 
 }

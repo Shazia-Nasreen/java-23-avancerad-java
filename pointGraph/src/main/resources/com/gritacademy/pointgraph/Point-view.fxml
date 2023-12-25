@@ -17,7 +17,7 @@
           <padding>
               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
           </padding>
-         <Canvas fx:id="canvas" height="600.0" onMouseClicked="#onCanvasClick" onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoveOnCanvas" onMousePressed="#onCanvasDragDown" onMouseReleased="#onCanvasDragReleased" width="1000.0" />
+         <Canvas fx:id="canvas" height="600.0" onMouseClicked="#onCanvasClick" onMouseDragged="#onMouseDragged" onMouseExited="#onCanvasExit" onMouseMoved="#onMouseMoveOnCanvas" onMousePressed="#onCanvasDragDown" onMouseReleased="#onCanvasDragReleased" width="1000.0" />
          <HBox prefHeight="35.0" prefWidth="973.0">
             <children>
             
