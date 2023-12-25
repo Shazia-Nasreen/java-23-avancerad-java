@@ -3,12 +3,11 @@ package com.gritacademy.pointgraph;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class PointApplication extends Application {
 
     public static Scene scene;
 
@@ -18,7 +17,7 @@ public class HelloApplication extends Application {
     *******************************/
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(PointApplication.class.getResource("Point-view.fxml"));
         scene = new Scene(fxmlLoader.load(), 1000, 700);
         stage.setTitle("pointGraph");
         stage.setScene(scene);
@@ -32,7 +31,7 @@ public class HelloApplication extends Application {
         //  setStyle("-fx-background-color: red");
 
 
-        HelloController controller = fxmlLoader.getController();
+        PointController controller = fxmlLoader.getController();
         //controller.createGrid();
     }
 

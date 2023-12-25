@@ -11,14 +11,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gritacademy.pointgraph.HelloController">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gritacademy.pointgraph.PointController">
    <children>
-      <VBox alignment="CENTER" layoutY="-25.0" prefHeight="734.0" prefWidth="989.0" spacing="20.0">
+      <VBox alignment="CENTER" layoutY="-25.0" prefHeight="734.0" prefWidth="1022.0" spacing="20.0">
           <padding>
               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
           </padding>
-         <Canvas fx:id="canvas" height="570.0" onMouseClicked="#onCanvasClick" onMouseMoved="#onMouseMoveOnCanvas" width="973.0" />
+         <Canvas fx:id="canvas" height="600.0" onMouseClicked="#onCanvasClick" onMouseDragged="#onMouseDragged" onMouseMoved="#onMouseMoveOnCanvas" onMousePressed="#onCanvasDragDown" onMouseReleased="#onCanvasDragReleased" width="1000.0" />
          <HBox prefHeight="35.0" prefWidth="973.0">
             <children>
             
@@ -29,17 +28,17 @@
                </Label>
                <TextField fx:id="insertTextFieldX" onKeyTyped="#onChangeX" promptText="X" />
                <TextField fx:id="insertTextFieldY" layoutX="38.0" layoutY="10.0" onKeyTyped="#onChangeY" promptText="Y" />
-                <Button onAction="#onInsert" text="insert val">
+                <Button onAction="#onInsert" onKeyPressed="#onKeySubmit" text="insert val">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
                </Button>
-               <Button layoutX="187.0" layoutY="10.0" onAction="#onReset" text="reset" />
+               <Button layoutX="187.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onAction="#onReset" text="reset" />
                <ChoiceBox fx:id="choiceBox" onContextMenuRequested="#onChoiceSelected" prefWidth="150.0" />
             </children>
          </HBox>
       </VBox>
-      <Slider fx:id="vSlide" onMouseDragged="#moveVertical" orientation="VERTICAL" prefHeight="592.0" prefWidth="28.0" />
-      <Slider fx:id="hSlide" layoutX="22.0" onMouseDragged="#moveHorizontal" prefHeight="17.0" prefWidth="991.0" AnchorPane.topAnchor="600.0" />
+      <Slider fx:id="vSlide" max="600.0" onMouseDragged="#moveVertical" orientation="VERTICAL" prefHeight="600.0" prefWidth="28.0" />
+      <Slider fx:id="hSlide" layoutX="22.0" max="1000.0" onMouseDragged="#moveHorizontal" prefHeight="20.0" prefWidth="1000.0" AnchorPane.topAnchor="600.0" />
    </children>
 </AnchorPane>

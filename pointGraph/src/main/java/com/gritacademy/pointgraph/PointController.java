@@ -1,8 +1,6 @@
 package com.gritacademy.pointgraph;
 
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,24 +14,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Affine;
-import javafx.scene.transform.Transform;
 
 import java.util.*;
 
-import static com.gritacademy.pointgraph.HelloApplication.scene;
-import static com.gritacademy.pointgraph.Mode.ADD;
+import static com.gritacademy.pointgraph.PointApplication.scene;
 
 
-public class HelloController {
-
-    public static final int POINT_SIZE = 50;
-    public static final double MAGNITUDE = 15.5d;
-    String turn = "player1";
-    private Point2D offset = new Point2D(0, 0);
-
-    private Point2D invertedOffset = new Point2D(offset.getX() * -1, offset.getY() * -1);
-
+public class PointController {
     class Alrik { //nested
 
         int age = 31;
@@ -56,9 +43,21 @@ public class HelloController {
         }
     }
 
+    public static final byte POINT_SIZE = 20, POINT_RADIUS = (int) (POINT_SIZE * 0.5);
+    public static final double MAGNITUDE = 30;
+    public static final double MAGNITUDE_FACTOR = 1 / MAGNITUDE;
+    public static short canvasWidth = 1000;
+    public static short canvasHeight = 600;
+    String turn = "player1";
+    private Point2D offset = new Point2D(0, 0);
+    private Point2D mousePanCoordDiff = new Point2D(0, 0);
+    private Point2D mousePanoriginCoord = new Point2D(0, 0);
+
+    private Point2D invertedOffset = new Point2D(offset.getX() * -1, offset.getY() * -1);
+
 
     //final String[] MODE= {"DEFAULT","ORDERED_X","NO_LINES","ADD","PAN","MOVE"};
-    private GraphicsContext gc;
+    private GraphicsContext gc, gf;
     private List<Point2D> points = new ArrayList<>();
     @FXML
     private Canvas canvas;
@@ -78,8 +77,10 @@ public class HelloController {
     @FXML
     private Label welcomeText;
     final private int gap = 100;
-    private int row = 10, col = 10; // auto assign
+    private int row, col; // auto assign
     private ObservableList<Mode> allModes = FXCollections.observableArrayList(Mode.DEFAULT, Mode.ORDERED_X, Mode.ORDERED_Y, Mode.NO_LINES);
+
+    private Mode mouseMode = Mode.DEFAULT;
     @FXML
     private ChoiceBox<Mode> choiceBox;
     private Tooltip tooltip = new Tooltip("Tooltip Text");
@@ -154,6 +155,15 @@ public class HelloController {
         Alrik a = new Alrik(29, "alle");
         a.age = 31;
 */
+        gc = canvas.getGraphicsContext2D();
+        canvasWidth = (short)canvas.getWidth();
+        canvasHeight = (short)canvas.getHeight();
+
+        row = Math.round(canvasHeight / gap);
+        col = Math.round(canvasWidth / gap);
+/*        offset = new Point2D(canvasWidth * MAGNITUDE, canvasHeight * MAGNITUDE);
+        hSlide.setValue(canvasWidth * 0.5);
+        vSlide.setValue(canvasHeight * 0.5);*/
         choiceBox.setItems(allModes);
         choiceBox.setValue(Mode.DEFAULT);
         choiceBox.getSelectionModel().selectedItemProperty().addListener(
@@ -167,18 +177,25 @@ public class HelloController {
                             case ORDERED_Y -> points.sort((o1, o2) -> (int) (o1.getY() - o2.getY()));
                             case NO_LINES -> noLines = true;
                         }
-                        draw(null);
+                        draw();
                     }
                 }
         );
 
     }
 
-    public HelloController() {
+    public PointController() {
         canvas = new Canvas(1000, 600);
         canvas.setVisible(true);
         System.out.println("init canvas");
         //Tooltip.install(canvas, tooltip);
+    }
+    @FXML
+    void onKeySubmit(KeyEvent event) {
+        onInsert(null);
+        insertTextFieldX.requestFocus();
+        insertTextFieldX.selectAll();
+        insertTextFieldX.positionCaret(0);
     }
 
     @FXML
@@ -188,30 +205,71 @@ public class HelloController {
 
     @FXML
     void onCanvasClick(MouseEvent event) {
-        System.out.println(event.getButton());
-        if (event.getButton() == MouseButton.SECONDARY)
-            deleteNode(new Point2D(event.getX()+invertedOffset.getX(), canvas.getHeight() - event.getY() +offset.getY()));
-        else
-            draw(new Point2D(event.getX()+invertedOffset.getX(), canvas.getHeight() - event.getY()+ offset.getY())); //creatar
+        //System.out.println(event.getButton());
+        switch (event.getButton()) {
+            case MouseButton.SECONDARY ->
+                    deleteNode(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()));
+            case MouseButton.PRIMARY ->
+                    draw(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())); //creatar
+        }
+    }
+
+    @FXML
+    void onCanvasDragDown(MouseEvent event) {
+
+        if (event.getButton() == MouseButton.MIDDLE) {
+            //System.out.println("middle");
+            mouseMode = Mode.PAN;
+            scene.setCursor(Cursor.OPEN_HAND);
+            mousePanoriginCoord = new Point2D(invertedOffset.getX() + event.getX(), invertedOffset.getY() + event.getY());
+            System.out.println("Enter");
+        }
+    }
+
+    @FXML
+    void onMouseDragged(MouseEvent event) {
+        if (mouseMode == Mode.PAN) {
+            //if (event.getButton() == MouseButton.MIDDLE) {
+            scene.setCursor(Cursor.CLOSED_HAND);
+            offset = new Point2D(event.getX() - mousePanoriginCoord.getX(), event.getY() - mousePanoriginCoord.getY());
+
+            vSlide.setValue(offset.getY() * MAGNITUDE_FACTOR);
+            hSlide.setValue(offset.getX() * MAGNITUDE_FACTOR);
+
+            invertedOffset = new Point2D(-offset.getX(), -offset.getY());
+            draw();
+        }
+    }
+
+    @FXML
+    void onCanvasDragReleased(MouseEvent event) {
+        if (mouseMode == Mode.PAN) {
+
+            //if (event.getButton() == MouseButton.MIDDLE) {
+            System.out.println("released");
+            scene.setCursor(Cursor.CROSSHAIR);
+            mouseMode = Mode.DEFAULT;
+        }
     }
 
     @FXML
     void moveHorizontal(MouseEvent event) {
-        Double hVal= hSlide.getValue()*MAGNITUDE;
+        Double hVal = hSlide.getValue() * MAGNITUDE;
         System.out.println("slide H " + hVal);
-       offset = new Point2D(hVal,offset.getY());
-      invertedOffset = new Point2D(-hVal,-offset.getY());
-        draw(null);
+        offset = new Point2D(hVal, offset.getY());
+        invertedOffset = new Point2D(-hVal, -offset.getY());
+        draw();
     }
 
     @FXML
     void moveVertical(MouseEvent event) {
-        Double vVal = vSlide.getValue()*MAGNITUDE;
+        Double vVal = vSlide.getValue() * MAGNITUDE;
         System.out.println("slide V " + vVal);
-         offset = new Point2D(offset.getX(), vVal);
-          invertedOffset = new Point2D(-offset.getX(), -vVal);
+        offset = new Point2D(offset.getX(), vVal);
 
-        draw(null);
+        invertedOffset = new Point2D(-offset.getX(), -vVal);
+
+        draw();
     }
 
     @FXML
@@ -237,16 +295,22 @@ public class HelloController {
     @FXML
     void onMouseMoveOnCanvas(MouseEvent event) {
         // System.out.println(event.getX()+":"+event.getY());
-        final int CANVAS_H = (int) canvas.getHeight();
-        scene.setCursor(Cursor.DEFAULT);
+
+        System.out.println(canvasHeight);
+        scene.setCursor(Cursor.CROSSHAIR);
         for (Point2D p : points)
-            if (p.distance(new Point2D(event.getX()+invertedOffset.getX(), CANVAS_H - event.getY()+offset.getY())) < POINT_SIZE*0.5) {
+            if (p.distance(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())) < POINT_RADIUS) {
                 // canvas.setTooltip(new Tooltip("Tooltip for Button"));
                 System.out.println(p);
                 tooltip.setText(event.getX() + ":" + event.getY());
                 scene.setCursor(Cursor.HAND);
                 break;
             }
+        draw(null);
+
+      //  gc.scale(1, -1);
+        gc.fillText("" + (int) (event.getX()- offset.getX() )+ ":" + (int) (canvasHeight - event.getY() + offset.getY() ), event.getX()+ POINT_RADIUS,  event.getY() + POINT_RADIUS);
+       // gc.scale(1, -1);
     }
 
     @FXML
@@ -266,16 +330,22 @@ public class HelloController {
         points.clear();
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
+
     void draw(Point2D point) {
-        gc = canvas.getGraphicsContext2D();
+        if (point != null) points.add(point);
+        draw();
+    }
+
+    void draw() {
+
 
         gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gc.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        gc.translate(offset.getX(), canvas.getHeight() + offset.getY());
+        gc.translate(offset.getX(), canvasHeight + offset.getY());
         gc.scale(1, -1);
         drawGrid();
 
@@ -283,46 +353,59 @@ public class HelloController {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(1.0);
 
-        if (point != null) points.add(point);
         Point2D pastP = null;
-        for (Point2D p : points) {
-            gc.beginPath();
-            if (!noLines && pastP != null) {
-                gc.moveTo(pastP.getX(), pastP.getY());
-                gc.lineTo(p.getX(), p.getY());
-                gc.stroke();
+        if (!points.isEmpty()) {
+            for (Point2D p : points) {
+                gc.beginPath();
+                if (!noLines) {
+                    if (pastP != null) {
+                        gc.moveTo(pastP.getX(), pastP.getY());
+                        gc.lineTo(p.getX(), p.getY());
+                        gc.stroke();
+                    }
+                    gc.scale(1, -1);
+                    gc.fillText("" + (int) p.getX() + ":" + (int) p.getY(), p.getX() + POINT_RADIUS, +canvasHeight - p.getY() - canvasHeight + POINT_RADIUS);
+                    gc.scale(1, -1);
+
+                }
+                pastP = p;
+                gc.strokeOval(p.getX() - POINT_RADIUS, p.getY() - POINT_RADIUS, POINT_SIZE, POINT_SIZE);
             }
-            pastP = p;
-            gc.strokeOval(p.getX() - POINT_SIZE * .5, p.getY() - POINT_SIZE * .5, POINT_SIZE, POINT_SIZE);
+            gc.fillOval(points.getLast().getX() - POINT_RADIUS, points.getLast().getY() - POINT_RADIUS, POINT_SIZE, POINT_SIZE);
+            // gc.fillText("" + points.getLast().getX() + ":" + points.getLast().getY(), points.getLast().getX(), points.getLast().getY());
+
         }
-        gc.fillOval(points.getLast().getX() - POINT_SIZE * .5, points.getLast().getY() - POINT_SIZE * .5, POINT_SIZE, POINT_SIZE);
         gc.scale(1, -1);
-        gc.translate(invertedOffset.getX(), -canvas.getHeight() + invertedOffset.getY());
+        gc.translate(invertedOffset.getX(), -canvasHeight + invertedOffset.getY());
     }
 
     void drawGrid() {
         gc.setStroke(Color.LIGHTGRAY);
         gc.beginPath();
-        for (int i = 0; i < row; i++) {
-            gc.moveTo(0, i * gap);
-            gc.lineTo(1000, i * gap);
-        }
-        for (int j = 0; j < col; j++) {
-            gc.moveTo(j * gap, 0);
-            gc.lineTo(j * gap, 700);
-        }
+
+        for (byte i = -1; i <= row; i++)  //row
+            drawLine(0 - gap, canvasWidth, i * gap, i * gap);
+
+        for (byte j = -1; j <= col; j++)   // col
+            drawLine(j * gap, j * gap, 0 - gap, canvasHeight);
+
         gc.stroke();
     }
 
+    private void drawLine(int x, int x2, int y, int y2) {
+        gc.moveTo(x - offset.getX() + offset.getX() % gap  +gap, y + offset.getY() - offset.getY() % gap + gap);
+        gc.lineTo(x2 - offset.getX() + offset.getX() % gap +gap, y2 + offset.getY() - offset.getY() % gap + gap);
+    }
+
+
     void deleteNode(Point2D target) {
-        Point2D targetToRemove;
         for (Point2D p : points)
-            if (p.distance(target) < 15) {
-                targetToRemove = p;
+            if (p.distance(target) < POINT_RADIUS) {
                 points.remove(p);
                 break;
             }
-        draw(null);
+
+        draw();
     }
 
 }
