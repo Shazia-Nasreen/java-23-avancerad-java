@@ -21,6 +21,8 @@ import static com.gritacademy.pointgraph.PointApplication.scene;
 
 
 public class PointController {
+    private int selectedNode;
+
     class Alrik { //nested
 
         int age = 31;
@@ -156,8 +158,8 @@ public class PointController {
         a.age = 31;
 */
         gc = canvas.getGraphicsContext2D();
-        canvasWidth = (short)canvas.getWidth();
-        canvasHeight = (short)canvas.getHeight();
+        canvasWidth = (short) canvas.getWidth();
+        canvasHeight = (short) canvas.getHeight();
 
         row = Math.round(canvasHeight / gap);
         col = Math.round(canvasWidth / gap);
@@ -190,6 +192,7 @@ public class PointController {
         System.out.println("init canvas");
         //Tooltip.install(canvas, tooltip);
     }
+
     @FXML
     void onKeySubmit(KeyEvent event) {
         onInsert(null);
@@ -209,25 +212,51 @@ public class PointController {
         switch (event.getButton()) {
             case MouseButton.SECONDARY ->
                     deleteNode(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()));
-            case MouseButton.PRIMARY ->
+            case MouseButton.PRIMARY -> {
+        /*        if (mouseMode != Mode.MOVE) {
                     draw(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())); //creatar
+                    System.out.println("created");
+                }*/
+            }
         }
     }
 
     @FXML
     void onCanvasDragDown(MouseEvent event) {
+        switch (event.getButton()) {
+            case MouseButton.PRIMARY -> {
+                selectedNode(event);
+                if (mouseMode == Mode.MOVE) {
+                    System.out.println(points.indexOf(selectedNode) + " DOWN");
 
-        if (event.getButton() == MouseButton.MIDDLE) {
-            //System.out.println("middle");
-            mouseMode = Mode.PAN;
-            scene.setCursor(Cursor.OPEN_HAND);
-            mousePanoriginCoord = new Point2D(invertedOffset.getX() + event.getX(), invertedOffset.getY() + event.getY());
-            System.out.println("Enter");
+                    System.out.println("move point");
+                } else
+                    draw(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())); //creatar
+
+            }
+            case MouseButton.MIDDLE -> {
+                //System.out.println("middle");
+                mouseMode = Mode.PAN;
+                scene.setCursor(Cursor.OPEN_HAND);
+                mousePanoriginCoord = new Point2D(invertedOffset.getX() + event.getX(), invertedOffset.getY() + event.getY());
+                System.out.println("Enter");
+            }
         }
     }
 
     @FXML
     void onMouseDragged(MouseEvent event) {
+        System.out.println(mouseMode);
+
+        if (mouseMode == Mode.MOVE) {
+            System.out.println(points.indexOf(selectedNode) + " DRAGGED");
+            if (selectedNode != -1) {
+                points.set(selectedNode, new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()));
+                draw();
+            }
+            // points.set(points.indexOf(selectedNode), points.get(points.indexOf(selectedNode)).add(10,10) );
+            System.out.println("Move");
+        }
         if (mouseMode == Mode.PAN) {
             //if (event.getButton() == MouseButton.MIDDLE) {
             scene.setCursor(Cursor.CLOSED_HAND);
@@ -242,13 +271,44 @@ public class PointController {
     }
 
     @FXML
-    void onCanvasDragReleased(MouseEvent event) {
-        if (mouseMode == Mode.PAN) {
+    void onMouseMoveOnCanvas(MouseEvent event) {
+        // System.out.println(event.getX()+":"+event.getY());
 
-            //if (event.getButton() == MouseButton.MIDDLE) {
-            System.out.println("released");
-            scene.setCursor(Cursor.CROSSHAIR);
-            mouseMode = Mode.DEFAULT;
+        scene.setCursor(Cursor.CROSSHAIR);
+        for (Point2D p : points)
+            if (p.distance(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())) < POINT_RADIUS) {
+                // canvas.setTooltip(new Tooltip("Tooltip for Button"));
+                System.out.println(p);
+                tooltip.setText(event.getX() + ":" + event.getY());
+                scene.setCursor(Cursor.HAND);
+                break;
+            }
+        draw(null);
+        //  gc.scale(1, -1);
+        gc.fillText("" + (int) (event.getX() - offset.getX()) + ":" + (int) (canvasHeight - event.getY() + offset.getY()), event.getX() + POINT_RADIUS, event.getY() + POINT_RADIUS);
+        // gc.scale(1, -1);
+    }
+
+    @FXML
+    void onCanvasDragReleased(MouseEvent event) {
+        switch (mouseMode) {
+            case Mode.MOVE -> {
+                // selectedNode = new Point2D(event.getX() + offset.getX(), event.getX() + offset.getY());
+                // if(selectedNode!=null) points.set(points.indexOf(selectedNode), new Point2D(event.getX() + invertedOffset.getX()+50, canvasHeight - event.getY() + offset.getY()+50));
+
+                System.out.println("released point");
+                selectedNode = -1;
+                mouseMode = Mode.DEFAULT;
+            }
+            case Mode.PAN -> {
+
+                //if (event.getButton() == MouseButton.MIDDLE) {
+                System.out.println("released");
+                scene.setCursor(Cursor.CROSSHAIR);
+                mouseMode = Mode.DEFAULT;
+
+            }
+
         }
     }
 
@@ -268,7 +328,6 @@ public class PointController {
         offset = new Point2D(offset.getX(), vVal);
 
         invertedOffset = new Point2D(-offset.getX(), -vVal);
-
         draw();
     }
 
@@ -292,26 +351,6 @@ public class PointController {
         }
     }
 
-    @FXML
-    void onMouseMoveOnCanvas(MouseEvent event) {
-        // System.out.println(event.getX()+":"+event.getY());
-
-        System.out.println(canvasHeight);
-        scene.setCursor(Cursor.CROSSHAIR);
-        for (Point2D p : points)
-            if (p.distance(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())) < POINT_RADIUS) {
-                // canvas.setTooltip(new Tooltip("Tooltip for Button"));
-                System.out.println(p);
-                tooltip.setText(event.getX() + ":" + event.getY());
-                scene.setCursor(Cursor.HAND);
-                break;
-            }
-        draw(null);
-
-      //  gc.scale(1, -1);
-        gc.fillText("" + (int) (event.getX()- offset.getX() )+ ":" + (int) (canvasHeight - event.getY() + offset.getY() ), event.getX()+ POINT_RADIUS,  event.getY() + POINT_RADIUS);
-       // gc.scale(1, -1);
-    }
 
     @FXML
     void onInsert(ActionEvent event) {
@@ -393,8 +432,8 @@ public class PointController {
     }
 
     private void drawLine(int x, int x2, int y, int y2) {
-        gc.moveTo(x - offset.getX() + offset.getX() % gap  +gap, y + offset.getY() - offset.getY() % gap + gap);
-        gc.lineTo(x2 - offset.getX() + offset.getX() % gap +gap, y2 + offset.getY() - offset.getY() % gap + gap);
+        gc.moveTo(x - offset.getX() + offset.getX() % gap + gap, y + offset.getY() - offset.getY() % gap + gap);
+        gc.lineTo(x2 - offset.getX() + offset.getX() % gap + gap, y2 + offset.getY() - offset.getY() % gap + gap);
     }
 
 
@@ -404,8 +443,30 @@ public class PointController {
                 points.remove(p);
                 break;
             }
-
         draw();
+    }
+
+    void selectedNode(MouseEvent event) {
+/*        for (Point2D p : points)
+            if (p.distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS) {
+                selectedNode = p;
+                mouseMode = Mode.MOVE;
+                System.out.println("selected point !!!");
+                break;
+            }
+        */
+        if (mouseMode != Mode.MOVE) for (int i = 0; i < points.size() ; i++) {
+            if (points.get(i).distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS) {
+                selectedNode = i;
+                // points.set(i, new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()+50));
+                // points.set(points.indexOf(selectedNode), new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()+50));
+
+                mouseMode = Mode.MOVE;
+                System.out.println("selected point !!!!!");
+                break;
+            }
+        }
+        //draw();
     }
 
 }
