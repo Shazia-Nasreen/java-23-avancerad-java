@@ -14,6 +14,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.*;
 
@@ -21,6 +22,7 @@ import static com.gritacademy.pointgraph.PointApplication.scene;
 
 
 public class PointController {
+    public static final byte CONSTANT_THRESH_HOLD = 10;
     private int selectedNode;
 
     class Alrik { //nested
@@ -381,8 +383,10 @@ public class PointController {
 
 
         gc.setFill(Color.WHITE);
+        gc.setStroke(Color.GREY);
         gc.fillRect(0, 0, canvasWidth, canvasHeight);
         drawGrid();
+        checkConstantTC();
 
         gc.translate(offset.getX(), canvasHeight + offset.getY());
         gc.scale(1, -1);
@@ -412,6 +416,7 @@ public class PointController {
             // gc.fillText("" + points.getLast().getX() + ":" + points.getLast().getY(), points.getLast().getX(), points.getLast().getY());
 
         }
+
         gc.scale(1, -1);
         gc.translate(invertedOffset.getX(), -canvasHeight + invertedOffset.getY());
     }
@@ -421,20 +426,20 @@ public class PointController {
         gc.beginPath();
 
         for (byte i = -1; i <= row; i++) {//row
-            drawLine(0-gap , canvasWidth+gap, i * gap, i * gap);
-            gc.strokeText(gap*(i +(int)((offset.getY())/gap)  )  + "", 0+5,  canvasHeight-i * gap + offset.getY() % gap+ 10);
+            drawLine(0 - gap, canvasWidth + gap, i * gap, i * gap);
+            gc.strokeText(gap * (i + (int) ((offset.getY()) / gap)) + "", 0 + 5, canvasHeight - i * gap + offset.getY() % gap + 10);
         }
         for (byte j = -1; j <= col; j++) {   // col
-            drawLine(j * gap, j * gap, 0 -gap, canvasHeight+gap);
-            gc.strokeText(gap*(j +(int)(invertedOffset.getX()/gap)  )  + "", j * gap + offset.getX() % gap+ 5,  canvasHeight- 10);
+            drawLine(j * gap, j * gap, 0 - gap, canvasHeight + gap);
+            gc.strokeText(gap * (j + (int) (invertedOffset.getX() / gap)) + "", j * gap + offset.getX() % gap + 5, canvasHeight - 10);
         }
 
         gc.stroke();
     }
 
     private void drawLine(int x, int x2, int y, int y2) {
-        gc.moveTo(x  + offset.getX() % gap , y  + offset.getY() % gap );
-        gc.lineTo(x2 + offset.getX() % gap , y2  + offset.getY() % gap );
+        gc.moveTo(x + offset.getX() % gap, y + offset.getY() % gap);
+        gc.lineTo(x2 + offset.getX() % gap, y2 + offset.getY() % gap);
     }
     /* private void drawLine(int x, int x2, int y, int y2) {
         gc.moveTo(x - offset.getX() + offset.getX() % gap + gap, y + offset.getY() + offset.getY() % gap + gap);
@@ -459,6 +464,51 @@ public class PointController {
                 System.out.println("selected point !!!!!");
                 break;
             }
+    }
+
+    void checkConstantTC() {
+        double generalCurviture = 0.0d;
+        int averageY = 0;
+        short amount = (short) points.size();
+        Point2D pastP = null;
+        for (Point2D p : points) {
+            if (pastP != null) {
+                generalCurviture += Math.atan2(p.getY() - pastP.getY(), p.getX() - pastP.getX());
+            }
+            averageY += p.getY();
+
+            pastP = p;
+        }
+        generalCurviture /= amount;
+        averageY /= amount;
+
+        generalCurviture *= 360 / Math.PI;
+        System.out.println(" general curviture is : " + generalCurviture);
+        gc.beginPath();
+        gc.setStroke(Color.BLACK);
+
+        gc.strokeText(Math.round(generalCurviture*100)*0.01 + "°", canvasWidth - 160, 20);
+        gc.stroke();
+
+        //gc.setFont(new Font());
+        if (generalCurviture < CONSTANT_THRESH_HOLD && generalCurviture > -CONSTANT_THRESH_HOLD) {
+            gc.beginPath();
+            gc.strokeText("O(1)", canvasWidth - 160, 50);
+
+            gc.setStroke(Color.LIMEGREEN);
+            gc.setLineWidth(3);
+            gc.moveTo(0, canvasHeight - averageY + offset.getY());
+            gc.lineTo(canvasWidth, canvasHeight - averageY + offset.getY());
+            gc.stroke();
+        }
+        gc.beginPath();
+
+        gc.setStroke(Color.LIGHTGRAY);
+        gc.setLineWidth(1);
+
+
+
+
     }
 
 }
