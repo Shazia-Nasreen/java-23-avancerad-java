@@ -26,9 +26,16 @@ import static javafx.scene.text.Font.font;
 
 public class PointController {
     public static final byte CONSTANT_THRESH_HOLD = 10;
+    public static final double RAD_TO_DEG_FACTOR = 57.2957795131;
+    public static final Point2D ORIGIN = new Point2D(0, 0);
     private int selectedNode;
     private Font notationFont = font("Nova Flat", FontWeight.BOLD, 28.0);
     private Font defaultFont = font("Nova Flat", 12);
+    private double generalCurviture;
+    private int averageX;
+    private int averageY;
+    private short amount;
+    private float amountMultiplyFactor;
 
     class Alrik { //nested
 
@@ -401,7 +408,7 @@ public class PointController {
 
 
                     points.add(point);
-                    points.sort((o1, o2) -> (int)(o1.getX() - o2.getX()));
+                    points.sort((o1, o2) -> (int) (o1.getX() - o2.getX()));
                     //do while??
                     /*short i = 0;
                     boolean higherThenBefore = false;
@@ -447,8 +454,12 @@ public class PointController {
         gc.setStroke(Color.GREY);
         gc.fillRect(0, 0, canvasWidth, canvasHeight);
         drawGrid();
-        if (!points.isEmpty()) checkConstantTC();
+        if (!points.isEmpty()) {
+            analyzePoints();
+            checkConstantTC();
+            checkLinearTC();
 
+        }
         gc.translate(offset.getX(), canvasHeight + offset.getY());
         gc.scale(1, -1);
 
@@ -527,29 +538,45 @@ public class PointController {
             }
     }
 
-    void checkConstantTC() {
-        double generalCurviture = 0.0d;
-        int averageY = 0;
-        short amount = (short) points.size();
+    void analyzePoints() {
+        generalCurviture = 0.0d;
+        averageY = 0;
+        averageX = 0;
+        amount = (short) points.size();
+        amountMultiplyFactor = (float) 1 / (amount - 1);
         Point2D pastP = null;
         for (Point2D p : points) {
             if (pastP != null) {
                 generalCurviture += Math.atan2(p.getY() - pastP.getY(), p.getX() - pastP.getX());
             }
+            averageX += p.getX();
             averageY += p.getY();
-
             pastP = p;
         }
-        generalCurviture /= amount;
+
+        generalCurviture *= amountMultiplyFactor;
+        //generalCurviture /= amount-1;
+
         averageY /= amount;
+        averageX /= amount;
+        generalCurviture *= RAD_TO_DEG_FACTOR;
+        //generalCurviture *= 180/Math.PI;
 
-        generalCurviture *= 360 / Math.PI;
-        // System.out.println(" general curviture is : " + generalCurviture);
         gc.beginPath();
-        gc.setFill(Color.BLACK);
-
-        gc.fillText(String.format("%.2f", generalCurviture) + "° angle", canvasWidth - 160, 20);
+        gc.setStroke(Color.BLACK);
+        gc.strokeText(String.format("%.2f",generalCurviture) + "° degrees", canvasWidth - 160, 20);
         gc.stroke();
+    }
+
+    void checkConstantTC() {
+
+        //System.out.println("Total diviation : " + diviatedTotalAngles);
+        // System.out.println("average diviation : " + averageDiviation);
+        //gc.beginPath();
+        // gc.setFill(Color.BLACK);
+
+        // gc.fillText(String.format("%.2f", generalCurviture) + "° angle", canvasWidth - 160, 20);
+        //gc.stroke();
 
         //gc.setFont(new Font());
         if (generalCurviture < CONSTANT_THRESH_HOLD && generalCurviture > -CONSTANT_THRESH_HOLD) {
@@ -559,8 +586,6 @@ public class PointController {
             gc.setFill(Color.LIMEGREEN);
             gc.fillText("O(1) - Constant time complexity", canvasWidth - 40, 50);
 
-
-
             gc.setStroke(Color.LIMEGREEN);
             gc.setLineWidth(3);
             gc.setTextAlign(TextAlignment.LEFT);
@@ -568,6 +593,8 @@ public class PointController {
             gc.lineTo(canvasWidth, canvasHeight - averageY + offset.getY());
             gc.stroke();
         }
+        drawAllComplexities();
+
         gc.beginPath();
         gc.setFont(defaultFont);
         gc.setStroke(Color.LIGHTGRAY);
@@ -577,46 +604,71 @@ public class PointController {
     }
 
     void checkLinearTC() {
-        double generalCurviture = 0.0d;
-        float angle = 0.0f;
-        int averageY = 0;
-        short amount = (short) points.size();
+        //float angle = 0.0f;
+
+        float diviatedTotalAngles = 0.0f, averageDiviation = 0.0f;
         Point2D pastP = null;
         for (Point2D p : points) {
             if (pastP != null) {
-                generalCurviture += Math.atan2(p.getY() - pastP.getY(), p.getX() - pastP.getX());
+                float angle = (float) (Math.atan2(p.getY() - pastP.getY(), p.getX() - pastP.getX()) * RAD_TO_DEG_FACTOR);
+                // System.out.println(angle + "p : "+ generalCurviture );
+                diviatedTotalAngles += Math.abs(angle - generalCurviture);
             }
-            averageY += p.getY();
-
             pastP = p;
         }
-        generalCurviture /= amount;
-        averageY /= amount;
+        averageDiviation = diviatedTotalAngles / amount;
 
-        generalCurviture *= 360 / Math.PI;
-        // System.out.println(" general curviture is : " + generalCurviture);
-        gc.beginPath();
-        gc.setStroke(Color.BLACK);
 
-        gc.strokeText(Math.round(generalCurviture * 100) * 0.01 + "°", canvasWidth - 160, 20);
-        gc.stroke();
 
         //gc.setFont(new Font());
-        if (generalCurviture < CONSTANT_THRESH_HOLD && generalCurviture > -CONSTANT_THRESH_HOLD) {
+        if (generalCurviture < 90 &&generalCurviture > CONSTANT_THRESH_HOLD && averageDiviation < CONSTANT_THRESH_HOLD && averageDiviation > -CONSTANT_THRESH_HOLD) {
             gc.beginPath();
-            gc.strokeText("O(1)", canvasWidth - 160, 50);
+            gc.setTextAlign(TextAlignment.RIGHT);
+            gc.setFont(notationFont);
+            gc.setFill(Color.YELLOWGREEN);
+            gc.fillText("O(n) - Linear time complexity", canvasWidth - 40, 50);
 
-            gc.setStroke(Color.LIMEGREEN);
+            gc.setStroke(Color.YELLOWGREEN);
+            gc.setTextAlign(TextAlignment.LEFT);
+
             gc.setLineWidth(3);
-            gc.moveTo(0, canvasHeight - averageY + offset.getY());
-            gc.lineTo(canvasWidth, canvasHeight - averageY + offset.getY());
+            gc.moveTo(averageX + Math.cos(Math.toRadians(generalCurviture)) * -3000 + offset.getX(), -averageY - (Math.sin(Math.toRadians(generalCurviture)) * -3000) + canvasHeight + offset.getY());
+            gc.lineTo(averageX + Math.cos(Math.toRadians(generalCurviture)) * 3000 + offset.getX(), -averageY - (Math.sin(Math.toRadians(generalCurviture)) * 3000) + canvasHeight + offset.getY());
             gc.stroke();
         }
-        gc.beginPath();
 
+        gc.beginPath();
+        gc.setFont(defaultFont);
         gc.setStroke(Color.LIGHTGRAY);
         gc.setLineWidth(1);
 
+    }
+
+    void drawAllComplexities() {
+        final int pointOfPlateau = canvasWidth, PlateauLevel = 350, Plateau_precipice = 0;
+        float angle = 25.0f;
+        Point2D origin = new Point2D(0, 0);
+        gc.beginPath();
+        gc.setStroke(Color.GOLD);
+        gc.setLineWidth(3);
+        drawFormatedBezierCurve((int) origin.getX(), (int) origin.getY(), Plateau_precipice, PlateauLevel, pointOfPlateau, PlateauLevel);
+        gc.moveTo(pointOfPlateau + offset.getX(), -PlateauLevel + canvasHeight + offset.getY());
+        gc.lineTo(pointOfPlateau + offset.getX() + 3000, -PlateauLevel + canvasHeight + offset.getY());
+        gc.stroke();
+
+/*
+        gc.beginPath();
+        gc.setStroke(Color.YELLOWGREEN);
+        gc.moveTo(origin.getX() + offset.getX(), -origin.getY() + canvasHeight + offset.getY());
+        gc.lineTo(Math.cos(Math.toRadians(angle)) * 3000 + offset.getX(), -(Math.sin(Math.toRadians(angle)) * 3000) + canvasHeight + offset.getY());
+        gc.stroke();
+*/
+
+
+    }
+
+    void drawFormatedBezierCurve(int v, int v1, int v2, int v3, int v4, int v5) {
+        gc.bezierCurveTo(v + offset.getX(), -v1 + canvasHeight + offset.getY(), v2 + offset.getX(), -v3 + canvasHeight + offset.getY(), v4 + offset.getX(), -v5 + canvasHeight + offset.getY());
 
     }
 

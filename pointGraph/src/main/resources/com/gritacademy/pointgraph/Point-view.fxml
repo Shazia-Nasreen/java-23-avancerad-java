@@ -36,7 +36,7 @@
                </Button>
                <Button layoutX="187.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onAction="#onReset" text="reset" />
                <ChoiceBox fx:id="choiceBox" onContextMenuRequested="#onChoiceSelected" prefWidth="150.0" />
-               <CheckBox fx:id="focusOnNewPoint" mnemonicParsing="false" onAction="#focusOnPointCheck" text="CheckBox">
+               <CheckBox fx:id="focusOnNewPoint" mnemonicParsing="false" onAction="#focusOnPointCheck" text="locate point">
                   <HBox.margin>
                      <Insets left="5.0" top="5.0" />
                   </HBox.margin>
