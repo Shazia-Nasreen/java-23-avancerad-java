@@ -250,6 +250,7 @@ public class PointController {
             System.out.println(points.indexOf(selectedNode) + " DRAGGED");
             if (selectedNode != -1) {
                 points.set(selectedNode, new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()));
+
                 draw();
             }
             // points.set(points.indexOf(selectedNode), points.get(points.indexOf(selectedNode)).add(10,10) );
@@ -294,6 +295,13 @@ public class PointController {
                 // selectedNode = new Point2D(event.getX() + offset.getX(), event.getX() + offset.getY());
                 // if(selectedNode!=null) points.set(points.indexOf(selectedNode), new Point2D(event.getX() + invertedOffset.getX()+50, canvasHeight - event.getY() + offset.getY()+50));
                 System.out.println("released point");
+                if(mouseMode == Mode.MOVE){
+
+                    switch (choiceBox.getValue()) {
+                        case ORDERED_X -> points.sort((o1, o2) -> (int) (o1.getX() - o2.getX()));
+                        case ORDERED_Y -> points.sort((o1, o2) -> (int) (o1.getY() - o2.getY()));
+                    }
+                }
                 selectedNode = -1;
                 mouseMode = Mode.DEFAULT;
             }
@@ -375,8 +383,32 @@ public class PointController {
 
 
     void draw(Point2D point) {
-        if (point != null) points.add(point);
+        if (point != null)
+            switch (choiceBox.getValue()) {
+                case ORDERED_X -> {
+                    //do while??
+                    short i = 0;
+                    do {
+                        i++;
+                        if (i == points.size() || points.size() < 1) {
+                            points.add(point);
+                            break;
+                        } else if (1 == points.size()) {
+                            points.add((points.get(i).getX() > point.getX()) ? 0 : 1, point);
+                            break;
+                        } else if (points.get(i - 1).getX() < point.getX() && point.getX() <= points.get(i).getX()) {
+                            points.add(i, point);
+                            break;
+                        }
+                    } while (i < points.size());
+
+                }
+                case ORDERED_Y -> points.add(point);
+                case DEFAULT -> points.add(point);
+            }
+
         draw();
+
     }
 
     void draw() {
@@ -386,7 +418,7 @@ public class PointController {
         gc.setStroke(Color.GREY);
         gc.fillRect(0, 0, canvasWidth, canvasHeight);
         drawGrid();
-        checkConstantTC();
+        if (!points.isEmpty()) checkConstantTC();
 
         gc.translate(offset.getX(), canvasHeight + offset.getY());
         gc.scale(1, -1);
@@ -487,7 +519,7 @@ public class PointController {
         gc.beginPath();
         gc.setStroke(Color.BLACK);
 
-        gc.strokeText(Math.round(generalCurviture*100)*0.01 + "°", canvasWidth - 160, 20);
+        gc.strokeText(Math.round(generalCurviture * 100) * 0.01 + "°", canvasWidth - 160, 20);
         gc.stroke();
 
         //gc.setFont(new Font());
@@ -505,8 +537,6 @@ public class PointController {
 
         gc.setStroke(Color.LIGHTGRAY);
         gc.setLineWidth(1);
-
-
 
 
     }
