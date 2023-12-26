@@ -15,15 +15,20 @@ import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 
 import java.util.*;
 
 import static com.gritacademy.pointgraph.PointApplication.scene;
+import static javafx.scene.text.Font.font;
 
 
 public class PointController {
     public static final byte CONSTANT_THRESH_HOLD = 10;
     private int selectedNode;
+    private Font notationFont = font("Nova Flat", FontWeight.BOLD, 28.0);
+    private Font defaultFont = font("Nova Flat", 12);
 
     class Alrik { //nested
 
@@ -80,6 +85,9 @@ public class PointController {
 
     @FXML
     private Label welcomeText;
+
+    @FXML
+    private CheckBox focusOnNewPoint;
     final private int gap = 100;
     private int row, col; // auto assign
     private ObservableList<Mode> allModes = FXCollections.observableArrayList(Mode.DEFAULT, Mode.ORDERED_X, Mode.ORDERED_Y, Mode.NO_LINES);
@@ -174,7 +182,7 @@ public class PointController {
                 new ChangeListener<Mode>() {
                     @Override
                     public void changed(ObservableValue<? extends Mode> observableValue, Mode mode, Mode selected) {
-                        System.out.println(selected);
+                        //System.out.println(selected);
                         noLines = false;
                         switch (selected) {
                             case ORDERED_X -> points.sort((o1, o2) -> (int) (o1.getX() - o2.getX()));
@@ -206,6 +214,12 @@ public class PointController {
     @FXML
     void onChoiceSelected(ContextMenuEvent event) {
         System.out.println("SELECTED MODE"); //doesnt work
+    }
+
+    @FXML
+    void focusOnPointCheck(ActionEvent event) {
+        //focusOnNewPoint.setSelected(focusOnNewPoint.isSelected());
+        System.out.println("tick"); //doesnt work
     }
 
     @FXML
@@ -244,17 +258,15 @@ public class PointController {
 
     @FXML
     void onMouseDragged(MouseEvent event) {
-        System.out.println(mouseMode);
+        // System.out.println(mouseMode);
 
         if (mouseMode == Mode.MOVE) {
-            System.out.println(points.indexOf(selectedNode) + " DRAGGED");
             if (selectedNode != -1) {
                 points.set(selectedNode, new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()));
-
                 draw();
             }
             // points.set(points.indexOf(selectedNode), points.get(points.indexOf(selectedNode)).add(10,10) );
-            System.out.println("Move");
+            //System.out.println("Move");
         }
         if (mouseMode == Mode.PAN) {
             //if (event.getButton() == MouseButton.MIDDLE) {
@@ -262,7 +274,7 @@ public class PointController {
             offset = new Point2D(event.getX() - mousePanoriginCoord.getX(), event.getY() - mousePanoriginCoord.getY());
 
             vSlide.setValue(offset.getY() * MAGNITUDE_FACTOR);
-            hSlide.setValue(offset.getX() * MAGNITUDE_FACTOR);
+            hSlide.setValue(-offset.getX() * MAGNITUDE_FACTOR);
 
             invertedOffset = new Point2D(-offset.getX(), -offset.getY());
             draw();
@@ -277,9 +289,9 @@ public class PointController {
         for (Point2D p : points)
             if (p.distance(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())) < POINT_RADIUS) {
                 // canvas.setTooltip(new Tooltip("Tooltip for Button"));
-                System.out.println(p);
+                //System.out.println(p);
                 tooltip.setText(event.getX() + ":" + event.getY());
-                scene.setCursor(Cursor.HAND);
+                scene.setCursor(Cursor.HAND); // hover
                 break;
             }
         draw(null);
@@ -295,7 +307,7 @@ public class PointController {
                 // selectedNode = new Point2D(event.getX() + offset.getX(), event.getX() + offset.getY());
                 // if(selectedNode!=null) points.set(points.indexOf(selectedNode), new Point2D(event.getX() + invertedOffset.getX()+50, canvasHeight - event.getY() + offset.getY()+50));
                 System.out.println("released point");
-                if(mouseMode == Mode.MOVE){
+                if (mouseMode == Mode.MOVE) {
 
                     switch (choiceBox.getValue()) {
                         case ORDERED_X -> points.sort((o1, o2) -> (int) (o1.getX() - o2.getX()));
@@ -323,7 +335,7 @@ public class PointController {
 
     @FXML
     void moveHorizontal(MouseEvent event) {
-        Double hVal = hSlide.getValue() * MAGNITUDE;
+        Double hVal = -hSlide.getValue() * MAGNITUDE;
         System.out.println("slide H " + hVal);
         offset = new Point2D(hVal, offset.getY());
         invertedOffset = new Point2D(-hVal, -offset.getY());
@@ -386,11 +398,28 @@ public class PointController {
         if (point != null)
             switch (choiceBox.getValue()) {
                 case ORDERED_X -> {
+
+
+                    points.add(point);
+                    points.sort((o1, o2) -> (int)(o1.getX() - o2.getX()));
                     //do while??
-                    short i = 0;
-                    do {
+                    /*short i = 0;
+                    boolean higherThenBefore = false;
+                     if (points.size() == 0) points.add(point);
+                   else
+                        do {
+
+                  if (higherThenBefore) {
+                            if (points.get(i).getX() >= point.getX())
+                                points.add(i, point);
+
+                        } else if (points.get(i).getX() < point.getX())
+                            higherThenBefore = true;
+
+
                         i++;
-                        if (i == points.size() || points.size() < 1) {
+
+                        if (i == points.size() || points.size() == 0) {
                             points.add(point);
                             break;
                         } else if (1 == points.size()) {
@@ -399,9 +428,9 @@ public class PointController {
                         } else if (points.get(i - 1).getX() < point.getX() && point.getX() <= points.get(i).getX()) {
                             points.add(i, point);
                             break;
-                        }
+                        }//else points.add(i-1, point);
                     } while (i < points.size());
-
+*/
                 }
                 case ORDERED_Y -> points.add(point);
                 case DEFAULT -> points.add(point);
@@ -493,7 +522,7 @@ public class PointController {
             if (points.get(i).distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS) {
                 selectedNode = i;
                 mouseMode = Mode.MOVE;
-                System.out.println("selected point !!!!!");
+                // System.out.println("selected point !!!!!");
                 break;
             }
     }
@@ -515,7 +544,57 @@ public class PointController {
         averageY /= amount;
 
         generalCurviture *= 360 / Math.PI;
-        System.out.println(" general curviture is : " + generalCurviture);
+        // System.out.println(" general curviture is : " + generalCurviture);
+        gc.beginPath();
+        gc.setFill(Color.BLACK);
+
+        gc.fillText(String.format("%.2f", generalCurviture) + "° angle", canvasWidth - 160, 20);
+        gc.stroke();
+
+        //gc.setFont(new Font());
+        if (generalCurviture < CONSTANT_THRESH_HOLD && generalCurviture > -CONSTANT_THRESH_HOLD) {
+            gc.beginPath();
+            gc.setTextAlign(TextAlignment.RIGHT);
+            gc.setFont(notationFont);
+            gc.setFill(Color.LIMEGREEN);
+            gc.fillText("O(1) - Constant time complexity", canvasWidth - 40, 50);
+
+
+
+            gc.setStroke(Color.LIMEGREEN);
+            gc.setLineWidth(3);
+            gc.setTextAlign(TextAlignment.LEFT);
+            gc.moveTo(0, canvasHeight - averageY + offset.getY());
+            gc.lineTo(canvasWidth, canvasHeight - averageY + offset.getY());
+            gc.stroke();
+        }
+        gc.beginPath();
+        gc.setFont(defaultFont);
+        gc.setStroke(Color.LIGHTGRAY);
+        gc.setLineWidth(1);
+
+
+    }
+
+    void checkLinearTC() {
+        double generalCurviture = 0.0d;
+        float angle = 0.0f;
+        int averageY = 0;
+        short amount = (short) points.size();
+        Point2D pastP = null;
+        for (Point2D p : points) {
+            if (pastP != null) {
+                generalCurviture += Math.atan2(p.getY() - pastP.getY(), p.getX() - pastP.getX());
+            }
+            averageY += p.getY();
+
+            pastP = p;
+        }
+        generalCurviture /= amount;
+        averageY /= amount;
+
+        generalCurviture *= 360 / Math.PI;
+        // System.out.println(" general curviture is : " + generalCurviture);
         gc.beginPath();
         gc.setStroke(Color.BLACK);
 
