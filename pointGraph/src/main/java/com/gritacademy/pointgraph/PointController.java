@@ -17,7 +17,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 import static com.gritacademy.pointgraph.PointApplication.scene;
@@ -28,7 +33,7 @@ public class PointController {
     public static final byte CONSTANT_THRESH_HOLD = 10;
     public static final double RAD_TO_DEG_FACTOR = 57.2957795131;
     public static final Point2D ORIGIN = new Point2D(0, 0);
-    private int selectedNode;
+    private short selectedNode;
     private Font notationFont = font("Nova Flat", FontWeight.BOLD, 28.0);
     private Font defaultFont = font("Nova Flat", 12);
     private double generalCurviture;
@@ -36,6 +41,7 @@ public class PointController {
     private int averageY;
     private short amount;
     private float amountMultiplyFactor;
+    private boolean focusOnPoint;
 
     class Alrik { //nested
 
@@ -63,7 +69,9 @@ public class PointController {
     public static final double MAGNITUDE = 30;
     public static final double MAGNITUDE_FACTOR = 1 / MAGNITUDE;
     public static short canvasWidth = 1000;
+    public static short canvasHalfWidth = (short) (canvasWidth * 0.5f);
     public static short canvasHeight = 600;
+    public static short canvasHalfHeight = (short) (canvasHeight * 0.5f);
     String turn = "player1";
     private Point2D offset = new Point2D(0, 0);
     private Point2D mousePanCoordDiff = new Point2D(0, 0);
@@ -175,8 +183,9 @@ public class PointController {
         a.age = 31;
 */
         gc = canvas.getGraphicsContext2D();
-        canvasWidth = (short) canvas.getWidth();
-        canvasHeight = (short) canvas.getHeight();
+
+        // canvasWidth = (short) canvas.getWidth();
+        // canvasHeight = (short) canvas.getHeight();
 
         row = (short) Math.floor(canvasHeight / gap);
         col = (short) Math.floor(canvasWidth / gap);
@@ -226,6 +235,7 @@ public class PointController {
     @FXML
     void focusOnPointCheck(ActionEvent event) {
         //focusOnNewPoint.setSelected(focusOnNewPoint.isSelected());
+        focusOnPoint = focusOnNewPoint.isSelected();
         System.out.println("tick"); //doesnt work
     }
 
@@ -315,7 +325,6 @@ public class PointController {
                 // if(selectedNode!=null) points.set(points.indexOf(selectedNode), new Point2D(event.getX() + invertedOffset.getX()+50, canvasHeight - event.getY() + offset.getY()+50));
                 System.out.println("released point");
                 if (mouseMode == Mode.MOVE) {
-
                     switch (choiceBox.getValue()) {
                         case ORDERED_X -> points.sort((o1, o2) -> (int) (o1.getX() - o2.getX()));
                         case ORDERED_Y -> points.sort((o1, o2) -> (int) (o1.getY() - o2.getY()));
@@ -337,7 +346,6 @@ public class PointController {
     @FXML
     void onCanvasExit() {
         scene.setCursor(Cursor.DEFAULT);
-
     }
 
     @FXML
@@ -402,11 +410,9 @@ public class PointController {
 
 
     void draw(Point2D point) {
-        if (point != null)
+        if (point != null) {
             switch (choiceBox.getValue()) {
                 case ORDERED_X -> {
-
-
                     points.add(point);
                     points.sort((o1, o2) -> (int) (o1.getX() - o2.getX()));
                     //do while??
@@ -442,23 +448,24 @@ public class PointController {
                 case ORDERED_Y -> points.add(point);
                 case DEFAULT -> points.add(point);
             }
-
+            if (focusOnPoint) setViewLocation(point);
+        }
         draw();
-
     }
 
-    void draw() {
-
-
+    void drawBackground() {
         gc.setFill(Color.WHITE);
         gc.setStroke(Color.GREY);
         gc.fillRect(0, 0, canvasWidth, canvasHeight);
+    }
+
+    void draw() {
+        drawBackground();
         drawGrid();
         if (!points.isEmpty()) {
             analyzePoints();
             checkConstantTC();
             checkLinearTC();
-
         }
         gc.translate(offset.getX(), canvasHeight + offset.getY());
         gc.scale(1, -1);
@@ -529,7 +536,7 @@ public class PointController {
     }
 
     void selectedNode(MouseEvent event) {
-        if (mouseMode != Mode.MOVE) for (int i = 0; i < points.size(); i++)
+        if (mouseMode != Mode.MOVE) for (short i = 0; i < points.size(); i++)
             if (points.get(i).distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS) {
                 selectedNode = i;
                 mouseMode = Mode.MOVE;
@@ -563,8 +570,9 @@ public class PointController {
         //generalCurviture *= 180/Math.PI;
 
         gc.beginPath();
-        gc.setStroke(Color.BLACK);
-        gc.strokeText(String.format("%.2f",generalCurviture) + "° degrees", canvasWidth - 160, 20);
+        gc.setFill(Color.BLACK);
+        if (!Double.isNaN(generalCurviture))
+            gc.fillText(String.format("%.2f", generalCurviture) + "° degrees", canvasWidth - 160, 20);
         gc.stroke();
     }
 
@@ -619,9 +627,8 @@ public class PointController {
         averageDiviation = diviatedTotalAngles / amount;
 
 
-
         //gc.setFont(new Font());
-        if (generalCurviture < 90 &&generalCurviture > CONSTANT_THRESH_HOLD && averageDiviation < CONSTANT_THRESH_HOLD && averageDiviation > -CONSTANT_THRESH_HOLD) {
+        if (generalCurviture < 90 && generalCurviture > CONSTANT_THRESH_HOLD && averageDiviation < CONSTANT_THRESH_HOLD && averageDiviation > -CONSTANT_THRESH_HOLD) {
             gc.beginPath();
             gc.setTextAlign(TextAlignment.RIGHT);
             gc.setFont(notationFont);
@@ -630,7 +637,6 @@ public class PointController {
 
             gc.setStroke(Color.YELLOWGREEN);
             gc.setTextAlign(TextAlignment.LEFT);
-
             gc.setLineWidth(3);
             gc.moveTo(averageX + Math.cos(Math.toRadians(generalCurviture)) * -3000 + offset.getX(), -averageY - (Math.sin(Math.toRadians(generalCurviture)) * -3000) + canvasHeight + offset.getY());
             gc.lineTo(averageX + Math.cos(Math.toRadians(generalCurviture)) * 3000 + offset.getX(), -averageY - (Math.sin(Math.toRadians(generalCurviture)) * 3000) + canvasHeight + offset.getY());
@@ -655,7 +661,6 @@ public class PointController {
         gc.moveTo(pointOfPlateau + offset.getX(), -PlateauLevel + canvasHeight + offset.getY());
         gc.lineTo(pointOfPlateau + offset.getX() + 3000, -PlateauLevel + canvasHeight + offset.getY());
         gc.stroke();
-
 /*
         gc.beginPath();
         gc.setStroke(Color.YELLOWGREEN);
@@ -663,13 +668,45 @@ public class PointController {
         gc.lineTo(Math.cos(Math.toRadians(angle)) * 3000 + offset.getX(), -(Math.sin(Math.toRadians(angle)) * 3000) + canvasHeight + offset.getY());
         gc.stroke();
 */
-
-
     }
 
     void drawFormatedBezierCurve(int v, int v1, int v2, int v3, int v4, int v5) {
         gc.bezierCurveTo(v + offset.getX(), -v1 + canvasHeight + offset.getY(), v2 + offset.getX(), -v3 + canvasHeight + offset.getY(), v4 + offset.getX(), -v5 + canvasHeight + offset.getY());
-
     }
 
+    void setViewLocation(Point2D point) {
+        System.out.println(canvasHalfHeight);
+        offset = new Point2D(-point.getX() + canvasHalfWidth, point.getY() - canvasHalfHeight);
+        invertedOffset = new Point2D(offset.getX() * -1, offset.getY() * -1);
+    }
+
+    public static void fileChooser(Stage stage) {
+        try {
+
+            FileChooser fileC = new FileChooser();
+
+            fileC.setInitialDirectory(new File("src")); // init path annars C
+            fileC.setTitle("Open File");
+
+            fileC.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("TABLE FILES", "*.csv", "*.json", "*.xml"),
+                    new FileChooser.ExtensionFilter("csv", "*.csv"),
+                    new FileChooser.ExtensionFilter("json", "*.json"),
+                    new FileChooser.ExtensionFilter("xml", "*.xml"),
+                    new FileChooser.ExtensionFilter("ALL FILES", "*.*")
+            );
+
+            File file = fileC.showOpenDialog(stage.getScene().getWindow());
+
+
+            if (file != null) {
+                System.out.println(file.getPath());
+
+            } else {
+                System.out.println("error"); // or something else
+            }
+        } catch (Exception e) {
+
+        }
+    }
 }

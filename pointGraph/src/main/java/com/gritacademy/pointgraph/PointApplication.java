@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import static com.gritacademy.pointgraph.PointController.fileChooser;
+
 public class PointApplication extends Application {
 
     public static Scene scene;
@@ -23,13 +25,13 @@ public class PointApplication extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-
         System.out.println(Mode.DEFAULT.ordinal()); //index
         System.out.println(Mode.DEFAULT); //skriva ut string direkt
         System.out.println(Mode.DEFAULT==Mode.DEFAULT); //jämnförelse
 
         //  setStyle("-fx-background-color: red");
 
+        fileChooser(stage);
 
         PointController controller = fxmlLoader.getController();
         //controller.createGrid();

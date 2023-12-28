@@ -46,9 +46,15 @@ public class javaFxFileApplication extends Application {
 
         if (file != null) {
             System.out.println(file.getPath());
-            //read json
-            JsonValue jv = Json.parse("{\"age\": 31}");
-            JsonArray ja = jv.asArray();
+            if (file.getName().endsWith(".json")) {
+                //read json
+                JsonValue jv = Json.parse("{\"age\": 31}");
+                JsonArray ja = jv.asArray();
+                System.out.println(ja);
+            }
+            if (file.getName().endsWith(".csv")) {
+                System.out.println("csv!!!");
+            }
         } else {
             System.out.println("error"); // or something else
         }
