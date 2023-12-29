@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
@@ -22,6 +23,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -82,7 +84,7 @@ public class PointController {
 
     //final String[] MODE= {"DEFAULT","ORDERED_X","NO_LINES","ADD","PAN","MOVE"};
     private GraphicsContext gc, gf;
-    private List<Point2D> points = new ArrayList<>();
+    private static List<Point2D> points = new ArrayList<>();
     @FXML
     private Canvas canvas;
 
@@ -100,6 +102,9 @@ public class PointController {
 
     @FXML
     private Label welcomeText;
+
+    @FXML
+    private MenuBar menuBar;
 
     @FXML
     private CheckBox focusOnNewPoint;
@@ -182,6 +187,31 @@ public class PointController {
         Alrik a = new Alrik(29, "alle");
         a.age = 31;
 */
+        menuBar.getMenus().clear();
+        Menu[] m = new Menu[]{new Menu("File"), new Menu("Edit")};
+        menuBar.getMenus().addAll(m);
+        MenuItem open = new MenuItem("Open file");
+        //  new ImageView(new Image("menusample/new.png")));
+        open.setOnAction(t -> {
+            System.out.println("open file");
+            try {
+                fileChooser((Stage) (canvas.getScene().getWindow()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        MenuItem save = new MenuItem("Save file");
+        //  new ImageView(new Image("menusample/new.png")));
+        save.setOnAction(t -> {
+            System.out.println("Save file");
+            try {
+                saveFile((Stage) (canvas.getScene().getWindow()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        m[0].getItems().add(open);
+
         gc = canvas.getGraphicsContext2D();
 
         // canvasWidth = (short) canvas.getWidth();
@@ -680,33 +710,77 @@ public class PointController {
         invertedOffset = new Point2D(offset.getX() * -1, offset.getY() * -1);
     }
 
-    public static void fileChooser(Stage stage) {
-        try {
+    public static void fileChooser(Stage stage) throws IOException {
+        FileChooser fileC = new FileChooser();
 
-            FileChooser fileC = new FileChooser();
+        fileC.setInitialDirectory(new File("src")); // init path annars C
+        fileC.setTitle("Open File");
 
-            fileC.setInitialDirectory(new File("src")); // init path annars C
-            fileC.setTitle("Open File");
+        fileC.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("TABLE FILES", "*.csv", "*.json", "*.xml"),
+                new FileChooser.ExtensionFilter("csv", "*.csv"),
+                new FileChooser.ExtensionFilter("json", "*.json"),
+                new FileChooser.ExtensionFilter("xml", "*.xml"),
+                new FileChooser.ExtensionFilter("ALL FILES", "*.*")
+        );
 
-            fileC.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("TABLE FILES", "*.csv", "*.json", "*.xml"),
-                    new FileChooser.ExtensionFilter("csv", "*.csv"),
-                    new FileChooser.ExtensionFilter("json", "*.json"),
-                    new FileChooser.ExtensionFilter("xml", "*.xml"),
-                    new FileChooser.ExtensionFilter("ALL FILES", "*.*")
-            );
-
-            File file = fileC.showOpenDialog(stage.getScene().getWindow());
-
-
-            if (file != null) {
-                System.out.println(file.getPath());
-
-            } else {
-                System.out.println("error"); // or something else
-            }
-        } catch (Exception e) {
+        if (!points.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "loading file will clear all current points ", new ButtonType("cancel", ButtonBar.ButtonData.CANCEL_CLOSE));
+            alert.showAndWait();
 
         }
+        File file = fileC.showOpenDialog(stage.getScene().getWindow());
+        FileReader fr;
+        if (file != null) {
+
+            char[] data = new char[(int) file.length()];
+            fr = new FileReader(file);
+            try {
+                //fr= new FileReader(file);
+                if (file != null) {
+                    fr.read(data);
+                    String sData = String.valueOf(data);
+                    points.clear();
+                    if (file.getCanonicalPath().endsWith(".csv")) {
+                        String[] dataArray = sData.split("\n");
+                        for (String s : dataArray) {
+                            String[] temp = s.split(",");
+                            try {
+                                Point2D p = new Point2D(Double.parseDouble(temp[0]), Double.parseDouble(temp[1]));
+                                System.out.println(p);
+                                points.add(p); //add to point list
+                            } catch (NumberFormatException ne) {
+                                System.out.println("not a number");
+                            }
+                        }
+
+                    } else if (file.getCanonicalPath().endsWith(".json")) {
+
+                        System.out.println("json!!!!E");
+                    }
+                } else {
+                    System.out.println("NO file selected!!!"); // or something else
+                }
+            } finally {
+                fr.close();
+            }
+        }
+    }
+
+    public static void saveFile(Stage stage) throws IOException {
+        FileChooser fileC = new FileChooser();
+
+        fileC.setInitialDirectory(new File("src")); // init path annars C
+        fileC.setTitle("Open File");
+
+        fileC.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("TABLE FILES", "*.csv", "*.json", "*.xml"),
+                new FileChooser.ExtensionFilter("csv", "*.csv"),
+                new FileChooser.ExtensionFilter("json", "*.json"),
+                new FileChooser.ExtensionFilter("xml", "*.xml"),
+                new FileChooser.ExtensionFilter("ALL FILES", "*.*")
+        );
+
+
     }
 }

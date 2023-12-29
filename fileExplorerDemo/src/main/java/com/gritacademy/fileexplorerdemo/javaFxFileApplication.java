@@ -12,6 +12,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 
@@ -42,8 +43,7 @@ public class javaFxFileApplication extends Application {
         );
 
         File file = fileC.showOpenDialog(stage.getScene().getWindow());
-
-
+        char[] data = new char[100];
         if (file != null) {
             System.out.println(file.getPath());
             if (file.getName().endsWith(".json")) {
@@ -53,7 +53,12 @@ public class javaFxFileApplication extends Application {
                 System.out.println(ja);
             }
             if (file.getName().endsWith(".csv")) {
+                FileReader fr = new FileReader(file);
+                fr.read(data);
+                //read json
                 System.out.println("csv!!!");
+                System.out.println(data);
+                fr.close();
             }
         } else {
             System.out.println("error"); // or something else

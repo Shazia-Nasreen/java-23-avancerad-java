@@ -20,7 +20,7 @@ public class PointApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(PointApplication.class.getResource("Point-view.fxml"));
-        scene = new Scene(fxmlLoader.load(), 1000, 700);
+        scene = new Scene(fxmlLoader.load());
         stage.setTitle("pointGraph");
         stage.setScene(scene);
         stage.setResizable(false);

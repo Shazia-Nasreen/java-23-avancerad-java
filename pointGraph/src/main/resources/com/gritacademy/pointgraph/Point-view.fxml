@@ -6,19 +6,47 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gritacademy.pointgraph.PointController">
+<AnchorPane prefHeight="762.0" prefWidth="1060.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gritacademy.pointgraph.PointController">
    <children>
-      <VBox alignment="CENTER" layoutY="-25.0" prefHeight="734.0" prefWidth="1022.0" spacing="20.0">
+      <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="1060.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <VBox alignment="CENTER" layoutY="25.0" prefHeight="731.0" prefWidth="1060.0" spacing="20.0">
           <padding>
               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
           </padding>
-         <Canvas fx:id="canvas" height="600.0" onMouseClicked="#onCanvasClick" onMouseDragged="#onMouseDragged" onMouseExited="#onCanvasExit" onMouseMoved="#onMouseMoveOnCanvas" onMousePressed="#onCanvasDragDown" onMouseReleased="#onCanvasDragReleased" width="1000.0" />
+         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <children>
+               <Canvas fx:id="canvas" height="600.0" layoutX="20.0" onMouseClicked="#onCanvasClick" onMouseDragged="#onMouseDragged" onMouseExited="#onCanvasExit" onMouseMoved="#onMouseMoveOnCanvas" onMousePressed="#onCanvasDragDown" onMouseReleased="#onCanvasDragReleased" width="1000.0" />
+               <Slider fx:id="vSlide" max="600.0" onMouseDragged="#moveVertical" orientation="VERTICAL" prefHeight="600.0" prefWidth="20.0" />
+               <Slider fx:id="hSlide" layoutX="20.0" layoutY="600.0" max="1000.0" onMouseDragged="#moveHorizontal" prefHeight="20.0" prefWidth="1000.0" />
+            </children>
+         </AnchorPane>
          <HBox prefHeight="35.0" prefWidth="973.0">
             <children>
             
@@ -44,7 +72,5 @@
             </children>
          </HBox>
       </VBox>
-      <Slider fx:id="vSlide" max="600.0" onMouseDragged="#moveVertical" orientation="VERTICAL" prefHeight="600.0" prefWidth="28.0" />
-      <Slider fx:id="hSlide" layoutX="22.0" max="1000.0" onMouseDragged="#moveHorizontal" prefHeight="20.0" prefWidth="1000.0" AnchorPane.topAnchor="600.0" />
    </children>
 </AnchorPane>
