@@ -21,11 +21,10 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.gritacademy.pointgraph.PointApplication.scene;
 import static javafx.scene.text.Font.font;
@@ -210,7 +209,7 @@ public class PointController {
                 throw new RuntimeException(e);
             }
         });
-        m[0].getItems().add(open);
+        m[0].getItems().addAll(open, save);
 
         gc = canvas.getGraphicsContext2D();
 
@@ -755,7 +754,37 @@ public class PointController {
                         }
 
                     } else if (file.getCanonicalPath().endsWith(".json")) {
+                        String dataString=sData.replaceAll("\n","");
+                        Pattern pattern = Pattern.compile("\\[(.*?)\\]");
+                        Matcher m= pattern.matcher(dataString);
+                        m.find();
+                        String mark = m.group();
+                        System.out.println(mark);
+                        Pattern inside = Pattern.compile("\\{(.*?)\\}");
+                        m= inside.matcher(mark);
+                        while (m.find()) {
+                            String point = m.group();
+                            Matcher mxy= Pattern.compile("\\\"x\\\":(.+?), \\\"y\\\":(.+?)}").matcher(point);
+                            mxy.find();
+                            System.out.println(mxy.group(1) +":"+mxy.group(2));
+                            points.add(
+                                    new Point2D(Double.parseDouble(mxy.group(1)), Double.parseDouble(mxy.group(2)))
+                            );
+                        }
 
+
+                    /*    for (String s : dataArray) {
+
+
+                            String[] temp = s.split(",");
+                            try {
+                                Point2D p = new Point2D(Double.parseDouble(temp[0]), Double.parseDouble(temp[1]));
+                                System.out.println(p);
+                                points.add(p); //add to point list
+                            } catch (NumberFormatException ne) {
+                                System.out.println("not a number");
+                            }
+                        }*/
                         System.out.println("json!!!!E");
                     }
                 } else {
@@ -771,7 +800,7 @@ public class PointController {
         FileChooser fileC = new FileChooser();
 
         fileC.setInitialDirectory(new File("src")); // init path annars C
-        fileC.setTitle("Open File");
+        fileC.setTitle("Save File");
 
         fileC.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("TABLE FILES", "*.csv", "*.json", "*.xml"),
@@ -781,6 +810,25 @@ public class PointController {
                 new FileChooser.ExtensionFilter("ALL FILES", "*.*")
         );
 
-
+        File file = fileC.showSaveDialog(stage.getScene().getWindow());
+        if (file.getCanonicalPath().endsWith(".csv")) {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("x,y\n");
+            for (Point2D p : points) {
+                fileWriter.write(p.getX() + "," + p.getY() + "\n");
+            }
+            fileWriter.close();
+        }
+        if (file.getCanonicalPath().endsWith(".json")) {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("{\n\t\"points\":[\n");
+            for (Point2D p : points) {
+                fileWriter.write("\t\t{\"x\":" + (int)p.getX() + ", \"y\":" + (int)p.getY() + "}");
+                if(points.getLast()==p)   fileWriter.write("\n");
+                else  fileWriter.write(",\n");
+            }
+            fileWriter.write("\t]\n}");
+            fileWriter.close();
+        }
     }
 }
