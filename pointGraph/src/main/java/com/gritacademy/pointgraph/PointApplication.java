@@ -31,7 +31,6 @@ public class PointApplication extends Application {
 
         //  setStyle("-fx-background-color: red");
 
-        fileChooser(stage);
 
         PointController controller = fxmlLoader.getController();
         //controller.createGrid();

@@ -42,7 +42,7 @@
           </padding>
          <AnchorPane prefHeight="200.0" prefWidth="200.0">
             <children>
-               <Canvas fx:id="canvas" height="600.0" layoutX="20.0" onMouseClicked="#onCanvasClick" onMouseDragged="#onMouseDragged" onMouseExited="#onCanvasExit" onMouseMoved="#onMouseMoveOnCanvas" onMousePressed="#onCanvasDragDown" onMouseReleased="#onCanvasDragReleased" width="1000.0" />
+               <Canvas fx:id="canvas" height="600.0" layoutX="20.0" onMouseClicked="#onCanvasClick" onMouseDragged="#onMouseDragged" onMouseExited="#onCanvasExit" onMouseMoved="#onMouseMoveOnCanvas" onMousePressed="#onCanvasDragDown" onMouseReleased="#onCanvasDragReleased" onScroll="#onCanvasScroll" width="1000.0" />
                <Slider fx:id="vSlide" max="600.0" onMouseDragged="#moveVertical" orientation="VERTICAL" prefHeight="600.0" prefWidth="20.0" />
                <Slider fx:id="hSlide" layoutX="20.0" layoutY="600.0" max="1000.0" onMouseDragged="#moveHorizontal" prefHeight="20.0" prefWidth="1000.0" />
             </children>

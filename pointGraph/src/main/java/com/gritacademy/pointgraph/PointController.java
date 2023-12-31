@@ -6,7 +6,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
@@ -43,6 +42,7 @@ public class PointController {
     private short amount;
     private float amountMultiplyFactor;
     private boolean focusOnPoint;
+    private float zoom = 1f;
 
     class Alrik { //nested
 
@@ -66,7 +66,7 @@ public class PointController {
         }
     }
 
-    public static final byte POINT_SIZE = 20, POINT_RADIUS = (int) (POINT_SIZE * 0.5);
+    public static byte POINT_SIZE = 20, POINT_RADIUS = (byte) (POINT_SIZE * 0.5);
     public static final double MAGNITUDE = 30;
     public static final double MAGNITUDE_FACTOR = 1 / MAGNITUDE;
     public static short canvasWidth = 1000;
@@ -107,7 +107,7 @@ public class PointController {
 
     @FXML
     private CheckBox focusOnNewPoint;
-    final private int gap = 100;
+    private int gap = 100;
     private int row, col; // auto assign
     private ObservableList<Mode> allModes = FXCollections.observableArrayList(Mode.DEFAULT, Mode.ORDERED_X, Mode.ORDERED_Y, Mode.NO_LINES);
 
@@ -216,8 +216,7 @@ public class PointController {
         // canvasWidth = (short) canvas.getWidth();
         // canvasHeight = (short) canvas.getHeight();
 
-        row = (short) Math.floor(canvasHeight / gap);
-        col = (short) Math.floor(canvasWidth / gap);
+        setGridDimensions();
 /*        offset = new Point2D(canvasWidth * MAGNITUDE, canvasHeight * MAGNITUDE);
         hSlide.setValue(canvasWidth * 0.5);
         vSlide.setValue(canvasHeight * 0.5);*/
@@ -273,7 +272,7 @@ public class PointController {
         //System.out.println(event.getButton());
         switch (event.getButton()) {
             case MouseButton.SECONDARY ->
-                    deleteNode(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()));
+                    deleteNode(new Point2D((event.getX() + invertedOffset.getX())/zoom, (canvasHeight - event.getY() + offset.getY())/zoom));
             case MouseButton.PRIMARY -> {
         /*        if (mouseMode != Mode.MOVE) {
                     draw(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())); //creatar
@@ -289,14 +288,13 @@ public class PointController {
             case MouseButton.PRIMARY -> {
                 selectedNode(event);
                 if (mouseMode == Mode.DEFAULT)
-                    draw(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())); //creatar
-
+                    draw(new Point2D((event.getX() + invertedOffset.getX()) / zoom, (canvasHeight - event.getY() + offset.getY()) / zoom)); //creatar
             }
             case MouseButton.MIDDLE -> {
                 //System.out.println("middle");
                 mouseMode = Mode.PAN;
                 scene.setCursor(Cursor.OPEN_HAND);
-                mousePanoriginCoord = new Point2D(invertedOffset.getX() + event.getX(), invertedOffset.getY() + event.getY());
+                mousePanoriginCoord = new Point2D((event.getX() + invertedOffset.getX()) / zoom, (invertedOffset.getY() + event.getY()) / zoom);
                 System.out.println("Enter");
             }
         }
@@ -333,7 +331,7 @@ public class PointController {
 
         scene.setCursor(Cursor.CROSSHAIR);
         for (Point2D p : points)
-            if (p.distance(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())) < POINT_RADIUS) {
+            if (p.distance(new Point2D((event.getX() + invertedOffset.getX()) / zoom, (canvasHeight - event.getY() + offset.getY()) / zoom)) < POINT_RADIUS * zoom) {
                 // canvas.setTooltip(new Tooltip("Tooltip for Button"));
                 //System.out.println(p);
                 tooltip.setText(event.getX() + ":" + event.getY());
@@ -384,6 +382,26 @@ public class PointController {
         offset = new Point2D(hVal, offset.getY());
         invertedOffset = new Point2D(-hVal, -offset.getY());
         draw();
+    }
+
+    @FXML
+    void onCanvasScroll(ScrollEvent event) {
+        zoom *= 1 + event.getDeltaY() * 0.003;
+        zoom = Math.clamp(zoom, 0.1f, 10f);
+        if (0.95 < zoom && zoom < 1.05) zoom = 1;
+        POINT_SIZE = (byte) (20 * zoom);
+        POINT_RADIUS = (byte) (POINT_SIZE * 0.5);
+
+        setGridDimensions();
+        System.out.println(zoom);
+        draw();
+    }
+
+
+    void setGridDimensions() {
+        gap = (int) (100 * zoom);
+        row = (short) Math.floor(canvasHeight / gap);
+        col = (short) Math.floor(canvasWidth / gap);
     }
 
     @FXML
@@ -497,7 +515,7 @@ public class PointController {
             checkLinearTC();
         }
         gc.translate(offset.getX(), canvasHeight + offset.getY());
-        gc.scale(1, -1);
+        gc.scale(1 * zoom, -1 * zoom);
 
         gc.setFill(Color.GREY);
         gc.setStroke(Color.BLACK);
@@ -525,7 +543,7 @@ public class PointController {
 
         }
 
-        gc.scale(1, -1);
+        gc.scale(1 / zoom, -1 / zoom);
         gc.translate(invertedOffset.getX(), -canvasHeight + invertedOffset.getY());
     }
 
@@ -535,19 +553,19 @@ public class PointController {
 
         for (byte i = -1; i <= row; i++) {//row
             drawLine(0 - gap, canvasWidth + gap, i * gap, i * gap);
-            gc.strokeText(gap * (i + (int) ((offset.getY()) / gap)) + "", 0 + 5, canvasHeight - i * gap + offset.getY() % gap + 10);
+            gc.strokeText(gap * (i + (int) ((offset.getY()) / gap)) + "", 0 + 5 * zoom, canvasHeight - i * gap + (offset.getY() % gap) + 10 * zoom);
         }
         for (byte j = -1; j <= col; j++) {   // col
             drawLine(j * gap, j * gap, 0 - gap, canvasHeight + gap);
-            gc.strokeText(gap * (j + (int) (invertedOffset.getX() / gap)) + "", j * gap + offset.getX() % gap + 5, canvasHeight - 10);
+            gc.strokeText(gap * (j + (int) (invertedOffset.getX() / gap)) + "", j * gap + offset.getX() % gap + 5 * zoom, canvasHeight - 10 * zoom);
         }
 
         gc.stroke();
     }
 
     private void drawLine(int x, int x2, int y, int y2) {
-        gc.moveTo(x + offset.getX() % gap, y + offset.getY() % gap);
-        gc.lineTo(x2 + offset.getX() % gap, y2 + offset.getY() % gap);
+        gc.moveTo(x + offset.getX() % gap, canvasHeight - y + offset.getY() % gap);
+        gc.lineTo(x2 + offset.getX() % gap, canvasHeight - y2 + offset.getY() % gap);
     }
     /* private void drawLine(int x, int x2, int y, int y2) {
         gc.moveTo(x - offset.getX() + offset.getX() % gap + gap, y + offset.getY() + offset.getY() % gap + gap);
@@ -566,7 +584,7 @@ public class PointController {
 
     void selectedNode(MouseEvent event) {
         if (mouseMode != Mode.MOVE) for (short i = 0; i < points.size(); i++)
-            if (points.get(i).distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS) {
+            if (points.get(i).distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS ) {
                 selectedNode = i;
                 mouseMode = Mode.MOVE;
                 // System.out.println("selected point !!!!!");
@@ -754,19 +772,19 @@ public class PointController {
                         }
 
                     } else if (file.getCanonicalPath().endsWith(".json")) {
-                        String dataString=sData.replaceAll("\n","");
+                        String dataString = sData.replaceAll("\n", "");
                         Pattern pattern = Pattern.compile("\\[(.*?)\\]");
-                        Matcher m= pattern.matcher(dataString);
+                        Matcher m = pattern.matcher(dataString);
                         m.find();
                         String mark = m.group();
                         System.out.println(mark);
                         Pattern inside = Pattern.compile("\\{(.*?)\\}");
-                        m= inside.matcher(mark);
+                        m = inside.matcher(mark);
                         while (m.find()) {
                             String point = m.group();
-                            Matcher mxy= Pattern.compile("\\\"x\\\":(.+?), \\\"y\\\":(.+?)}").matcher(point);
+                            Matcher mxy = Pattern.compile("\\\"x\\\":(.+?), \\\"y\\\":(.+?)}").matcher(point);
                             mxy.find();
-                            System.out.println(mxy.group(1) +":"+mxy.group(2));
+                            System.out.println(mxy.group(1) + ":" + mxy.group(2));
                             points.add(
                                     new Point2D(Double.parseDouble(mxy.group(1)), Double.parseDouble(mxy.group(2)))
                             );
@@ -823,9 +841,9 @@ public class PointController {
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write("{\n\t\"points\":[\n");
             for (Point2D p : points) {
-                fileWriter.write("\t\t{\"x\":" + (int)p.getX() + ", \"y\":" + (int)p.getY() + "}");
-                if(points.getLast()==p)   fileWriter.write("\n");
-                else  fileWriter.write(",\n");
+                fileWriter.write("\t\t{\"x\":" + (int) p.getX() + ", \"y\":" + (int) p.getY() + "}");
+                if (points.getLast() == p) fileWriter.write("\n");
+                else fileWriter.write(",\n");
             }
             fileWriter.write("\t]\n}");
             fileWriter.close();
