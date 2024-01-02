@@ -273,12 +273,12 @@ public class PointController {
         switch (event.getButton()) {
             case MouseButton.SECONDARY ->
                     deleteNode(new Point2D((event.getX() + invertedOffset.getX())/zoom, (canvasHeight - event.getY() + offset.getY())/zoom));
-            case MouseButton.PRIMARY -> {
+           // case MouseButton.PRIMARY -> {
         /*        if (mouseMode != Mode.MOVE) {
                     draw(new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY())); //creatar
                     System.out.println("created");
                 }*/
-            }
+          //  }
         }
     }
 
@@ -306,7 +306,7 @@ public class PointController {
 
         if (mouseMode == Mode.MOVE) {
             if (selectedNode != -1) {
-                points.set(selectedNode, new Point2D(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()));
+                points.set(selectedNode, new Point2D((event.getX() + invertedOffset.getX())/zoom , (canvasHeight - event.getY() + offset.getY())/zoom));
                 draw();
             }
             // points.set(points.indexOf(selectedNode), points.get(points.indexOf(selectedNode)).add(10,10) );
@@ -315,7 +315,7 @@ public class PointController {
         if (mouseMode == Mode.PAN) {
             //if (event.getButton() == MouseButton.MIDDLE) {
             scene.setCursor(Cursor.CLOSED_HAND);
-            offset = new Point2D(event.getX() - mousePanoriginCoord.getX(), event.getY() - mousePanoriginCoord.getY());
+            offset = new Point2D(event.getX() - mousePanoriginCoord.getX()*zoom, event.getY() - mousePanoriginCoord.getY()*zoom);
 
             vSlide.setValue(offset.getY() * MAGNITUDE_FACTOR);
             hSlide.setValue(-offset.getX() * MAGNITUDE_FACTOR);
@@ -584,10 +584,10 @@ public class PointController {
 
     void selectedNode(MouseEvent event) {
         if (mouseMode != Mode.MOVE) for (short i = 0; i < points.size(); i++)
-            if (points.get(i).distance(event.getX() + invertedOffset.getX(), canvasHeight - event.getY() + offset.getY()) < POINT_RADIUS ) {
+            if (points.get(i).distance((event.getX()+ invertedOffset.getX())/zoom , (canvasHeight - event.getY() + offset.getY())/zoom  )< POINT_RADIUS *zoom) {
                 selectedNode = i;
                 mouseMode = Mode.MOVE;
-                // System.out.println("selected point !!!!!");
+                 System.out.println("selected point !!!!!");
                 break;
             }
     }
@@ -723,7 +723,7 @@ public class PointController {
 
     void setViewLocation(Point2D point) {
         System.out.println(canvasHalfHeight);
-        offset = new Point2D(-point.getX() + canvasHalfWidth, point.getY() - canvasHalfHeight);
+        offset = new Point2D(-point.getX()*zoom + canvasHalfWidth, point.getY()*zoom - canvasHalfHeight);
         invertedOffset = new Point2D(offset.getX() * -1, offset.getY() * -1);
     }
 
