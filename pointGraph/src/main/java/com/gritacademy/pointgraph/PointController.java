@@ -215,8 +215,12 @@ public class PointController {
 
         // canvasWidth = (short) canvas.getWidth();
         // canvasHeight = (short) canvas.getHeight();
+        //draw();
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0,0,canvasWidth,canvasHeight);
 
         setGridDimensions();
+        drawGrid();
 /*        offset = new Point2D(canvasWidth * MAGNITUDE, canvasHeight * MAGNITUDE);
         hSlide.setValue(canvasWidth * 0.5);
         vSlide.setValue(canvasHeight * 0.5);*/
@@ -340,7 +344,8 @@ public class PointController {
             }
         draw(null);
         //  gc.scale(1, -1);
-        gc.fillText("" + (int) (event.getX() - offset.getX()) + ":" + (int) (canvasHeight - event.getY() + offset.getY()), event.getX() + POINT_RADIUS, event.getY() + POINT_RADIUS);
+        //mouse coords
+        gc.fillText("" + (int) ((event.getX() - offset.getX())/zoom) + ":" + (int) ((canvasHeight - event.getY() + offset.getY())/zoom), event.getX() + POINT_RADIUS, event.getY() + POINT_RADIUS);
         // gc.scale(1, -1);
     }
 
@@ -450,9 +455,10 @@ public class PointController {
     @FXML
     void onReset(ActionEvent event) {
         points.clear();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
         gc.fillRect(0, 0, canvasWidth, canvasHeight);
+        drawGrid();
+
     }
 
 
@@ -611,8 +617,8 @@ public class PointController {
         generalCurviture *= amountMultiplyFactor;
         //generalCurviture /= amount-1;
 
-        averageY /= amount;
-        averageX /= amount;
+        averageY /= amount/zoom;
+        averageX /= amount/zoom;
         generalCurviture *= RAD_TO_DEG_FACTOR;
         //generalCurviture *= 180/Math.PI;
 
@@ -629,7 +635,6 @@ public class PointController {
         // System.out.println("average diviation : " + averageDiviation);
         //gc.beginPath();
         // gc.setFill(Color.BLACK);
-
         // gc.fillText(String.format("%.2f", generalCurviture) + "° angle", canvasWidth - 160, 20);
         //gc.stroke();
 
@@ -644,8 +649,8 @@ public class PointController {
             gc.setStroke(Color.LIMEGREEN);
             gc.setLineWidth(3);
             gc.setTextAlign(TextAlignment.LEFT);
-            gc.moveTo(0, canvasHeight - averageY + offset.getY());
-            gc.lineTo(canvasWidth, canvasHeight - averageY + offset.getY());
+            gc.moveTo(0, canvasHeight + offset.getY() - averageY);
+            gc.lineTo(canvasWidth, canvasHeight + offset.getY()- averageY);
             gc.stroke();
         }
         drawAllComplexities();
